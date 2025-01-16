@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">EL TIEMPO CONTIGO</string>
+    <string name="back">Go back</string>
+    <string name="title_activity_forecas_screen">ForecasScreen</string>
+    <string name="top_bar_tittle">TU TIEMPO CONTIGO</string>
+</resources>
