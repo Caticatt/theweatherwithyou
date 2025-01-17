@@ -149,5 +149,6 @@ data class Hourly(
     @SerialName("precip")
     val precip: Int,
     @SerialName("pressure")
-    val pressure: Int,
+    val pressure: Int
 )
+
