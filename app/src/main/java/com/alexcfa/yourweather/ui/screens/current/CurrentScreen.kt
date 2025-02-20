@@ -16,7 +16,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -39,19 +38,9 @@ import com.alexcfa.yourweather.R
 import com.alexcfa.yourweather.ui.common.LoadingProgressIndicator
 import com.alexcfa.yourweather.ui.common.PermissionRequestEffect
 import com.alexcfa.yourweather.ui.common.getRegion
-import com.alexcfa.yourweather.ui.theme.YourWeatherTheme
+import com.alexcfa.yourweather.ui.screens.Screen
 import kotlinx.coroutines.launch
 
-@Composable
-fun Screen(content: @Composable () -> Unit) {
-    YourWeatherTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background,
-            content = content
-        )
-    }
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -11,10 +11,10 @@ import kotlinx.coroutines.launch
 
 class CurrentViewModel : ViewModel() {
 
+    private val repository = WeatherRepository()
+
     var state by mutableStateOf(UiState())
         private set
-
-    private val repository = WeatherRepository()
 
     fun onUiReady() {
         viewModelScope.launch {
