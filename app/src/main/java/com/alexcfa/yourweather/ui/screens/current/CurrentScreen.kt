@@ -19,6 +19,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,7 +47,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun CurrentScreen(
     onHourlyClick: () -> Unit,
-    vm: CurrentViewModel = viewModel(),
+    viewModel: CurrentViewModel = viewModel(),
     modifier: Modifier = Modifier,
 ) {
     val ctx = LocalContext.current
@@ -63,7 +64,7 @@ fun CurrentScreen(
         } else {
             appBarTitle = "$appName (Permission denied)"
         }
-        vm.onUiReady()
+        viewModel.onUiReady()
     }
     Screen {
         Scaffold(
@@ -73,7 +74,7 @@ fun CurrentScreen(
                 )
             }
         ) { padding ->
-            val state = vm.state
+            val state by viewModel.state.collectAsState()
 
             if (state.loading) {
                 LoadingProgressIndicator(modifier = modifier.padding(padding))
