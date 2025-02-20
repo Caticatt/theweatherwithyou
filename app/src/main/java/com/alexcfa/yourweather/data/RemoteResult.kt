@@ -103,7 +103,7 @@ data class Current(
     @SerialName("pressure")
     val pressure: Int,
     @SerialName("precip")
-    val precip: Int,
+    val precip: Double,
     @SerialName("humidity")
     val humidity: Int,
     @SerialName("cloudcover")

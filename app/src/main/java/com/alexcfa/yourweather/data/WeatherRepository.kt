@@ -2,36 +2,60 @@ package com.alexcfa.yourweather.data
 
 import CurrentLocationResponse
 import Hourly
+import android.os.Build
+import androidx.annotation.RequiresApi
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
 
 class WeatherRepository {
 
-    //ACCESS_KEY = 1033329b803bec2c5d1c7cd972cc7f2d
+    companion object {
+        const val UNITS = "m"
+        const val INTERVAL = 1
+        const val HOURLY = 1
+    }
 
-    //https://api.weatherstack.com/current?access_key=ACCESS_KEY&query=NewYork
 
-    //
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getActualDate(): String {
+        val actualDate = LocalDate.now()
+        val dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        return actualDate.format(dateFormat)
+    }
 
-    suspend fun fetchCurrentLocation(): CurrentLocationResponse =
-        WeatherClient.instance.fetchCurrentLocationWeather("Madrid,Spain", "m")
 
-    suspend fun fetchHourlyLocationData(): List<Hourly> =
+    suspend fun fetchCurrentLocation(
+        query: String = "Madrid, ES",
+        units: String = UNITS
+    ): CurrentLocationResponse =
+        WeatherClient.instance.fetchCurrentLocationWeather(query, units)
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    suspend fun fetchHourlyLocationData(
+        query: String = "Madrid, ES",
+        historicalDate: String = getActualDate(),
+        hourly: Int = HOURLY,
+        interval: Int = INTERVAL,
+        units: String = UNITS
+    ): List<Hourly> =
         WeatherClient.instance.fetchHistoricalWeather(
-            "Madrid,Spain",
-            "2025-01-12",
-            1,
-            1,
-            "m"
+            query,
+            historicalDate,
+            hourly,
+            interval,
+            units
         ).historical.values.firstOrNull()?.hourly!!.map {
             it.toDomainModel()
         }
 }
 
 private fun Hourly.toDomainModel(): Hourly = Hourly(
-    precip = precip,
-    pressure = pressure,
-    temperature = temperature,
     time = time,
-    weatherDescriptions = weatherDescriptions,
+    temperature = temperature,
+    windSpeed = windSpeed,
     weatherIcons = weatherIcons,
-    windSpeed = windSpeed
+    weatherDescriptions = weatherDescriptions,
+    precip = precip,
+    pressure = pressure
 )
