@@ -39,7 +39,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.alexcfa.yourweather.R
 import com.alexcfa.yourweather.ui.common.LoadingProgressIndicator
-import com.alexcfa.yourweather.ui.screens.current.Screen
+import com.alexcfa.yourweather.ui.screens.Screen
 
 
 @RequiresApi(Build.VERSION_CODES.O)
