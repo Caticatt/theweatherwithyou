@@ -41,6 +41,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.alexcfa.yourweather.R
 import com.alexcfa.yourweather.ui.common.LoadingProgressIndicator
+import com.alexcfa.yourweather.ui.common.getActualDateString
 import com.alexcfa.yourweather.ui.screens.Screen
 
 
@@ -55,13 +56,16 @@ fun HourlyScreen(
         val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
         Scaffold(
             topBar = {
+                val topBarTitle = stringResource(id = R.string.hourly_weather_tittle)
                 HourlyTopBar(
-                    stringResource(R.string.top_bar_tittle),
-                    onBack,
-                    scrollBehavior
+                    title =topBarTitle,
+                    scrollBehavior = scrollBehavior,
+                    onBack= onBack,
                 )
             },
-            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+            modifier = Modifier
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
+                .background(MaterialTheme.colorScheme.inversePrimary),
             contentWindowInsets = WindowInsets.safeDrawing
         ) { padding ->
             val state by viewModel.state.collectAsState()
@@ -77,13 +81,12 @@ fun HourlyScreen(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(60.dp)
+                            .height(40.dp)
                             .background(MaterialTheme.colorScheme.inversePrimary)
                     ) {
-                        Text(text = "Martes, 3 Diciembre")
                         Text(
-                            text = "Tiempo en horas",
-                            modifier = Modifier.align(Alignment.BottomStart)
+                            text = getActualDateString(),
+                            modifier = Modifier.align(Alignment.Center)
                         )
                     }
                 }
@@ -100,8 +103,8 @@ fun HourlyScreen(
 @Composable
 fun HourlyTopBar(
     title: String,
+    scrollBehavior: TopAppBarScrollBehavior,
     onBack: () -> Unit,
-    scrollBehavior: TopAppBarScrollBehavior
 ) {
     TopAppBar(
         title = { Text(text = title) },

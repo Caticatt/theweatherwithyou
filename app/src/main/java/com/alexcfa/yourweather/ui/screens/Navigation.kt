@@ -22,7 +22,7 @@ fun Navigation() {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = NavScreen.CurrentScreen.route) {
         composable(NavScreen.CurrentScreen.route) {
-            CurrentScreen(onHourlyClick = { navController.navigate("hourly") })
+            CurrentScreen(onHourlyClick = { navController.navigate(NavScreen.HourlyScreen.route) })
         }
         composable(NavScreen.HourlyScreen.route) {
             HourlyScreen(
