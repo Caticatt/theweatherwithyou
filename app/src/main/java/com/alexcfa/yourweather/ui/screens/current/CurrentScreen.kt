@@ -66,6 +66,7 @@ fun CurrentScreen(
         }
         viewModel.onUiReady()
     }
+
     Screen {
         Scaffold(
             topBar = {
@@ -74,6 +75,7 @@ fun CurrentScreen(
                 )
             }
         ) { padding ->
+
             val state by viewModel.state.collectAsState()
 
             if (state.loading) {

@@ -16,14 +16,12 @@ class WeatherRepository {
         const val HOURLY = 1
     }
 
-
     @RequiresApi(Build.VERSION_CODES.O)
     fun getActualDate(): String {
         val actualDate = LocalDate.now()
         val dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         return actualDate.format(dateFormat)
     }
-
 
     suspend fun fetchCurrentLocation(
         query: String = "Madrid, ES",

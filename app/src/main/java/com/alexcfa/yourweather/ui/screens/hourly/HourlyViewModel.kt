@@ -9,6 +9,7 @@ import com.alexcfa.yourweather.data.WeatherRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class HourlyViewModel : ViewModel() {
@@ -28,7 +29,16 @@ class HourlyViewModel : ViewModel() {
 
     data class UiState(
         val loading: Boolean = false,
-        val hourly: List<Hourly> = emptyList()
+        val hourly: List<Hourly> = emptyList(),
+        val message: String? = null
     )
+
+    fun onRefreshClick() {
+        _state.update { it.copy(message = "Tiempo actualizado") }
+    }
+
+    fun onMessageShown() {
+        _state.update { it.copy(message = null) }
+    }
 
 }
