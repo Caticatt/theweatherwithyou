@@ -3,4 +3,7 @@
     <string name="back">Go back</string>
     <string name="title_activity_forecas_screen">ForecasScreen</string>
     <string name="top_bar_tittle">TU TIEMPO CONTIGO</string>
+    <string name="hourly_weather_tittle">Tiempo en horas</string>
+    <string name="refresh">Refrescar</string>
+
 </resources>
