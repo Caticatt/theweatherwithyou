@@ -25,16 +25,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -60,25 +56,20 @@ fun HourlyScreen(
 ) {
     Screen {
 
-        val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+        val hourlyState = rememberHourlyState()
         val state by viewModel.state.collectAsState()
-        val snackBarHostState = remember { SnackbarHostState() }
 
-        LaunchedEffect(state.message) {
-            state.message?.let {
-                snackBarHostState.currentSnackbarData?.dismiss()
-                snackBarHostState.showSnackbar(it)
-                viewModel.onMessageShown()
-            }
-
+        hourlyState.ShowMessageEffect(message = state.message) {
+            viewModel.onMessageShown()
         }
+
         Scaffold(
             topBar = {
                 val topBarTitle = stringResource(id = R.string.hourly_weather_tittle)
                 HourlyTopBar(
-                    title =topBarTitle,
-                    scrollBehavior = scrollBehavior,
-                    onBack= onBack,
+                    title = topBarTitle,
+                    scrollBehavior = hourlyState.scrollBehavior,
+                    onBack = onBack,
                 )
             },
             floatingActionButton = {
@@ -90,10 +81,10 @@ fun HourlyScreen(
                 }
             },
             snackbarHost = {
-                SnackbarHost(hostState = snackBarHostState)
+                SnackbarHost(hostState = hourlyState.snackBarHostState)
             },
             modifier = Modifier
-                .nestedScroll(scrollBehavior.nestedScrollConnection)
+                .nestedScroll(hourlyState.scrollBehavior.nestedScrollConnection)
                 .background(MaterialTheme.colorScheme.inversePrimary),
             contentWindowInsets = WindowInsets.safeDrawing
         ) { padding ->

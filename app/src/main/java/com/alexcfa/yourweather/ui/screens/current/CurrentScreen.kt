@@ -1,7 +1,6 @@
 package com.alexcfa.yourweather.ui.screens.current
 
 import CurrentLocationResponse
-import android.Manifest
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -21,26 +20,16 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
-import com.alexcfa.yourweather.R
 import com.alexcfa.yourweather.ui.common.LoadingProgressIndicator
-import com.alexcfa.yourweather.ui.common.PermissionRequestEffect
-import com.alexcfa.yourweather.ui.common.getRegion
 import com.alexcfa.yourweather.ui.screens.Screen
-import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,20 +39,11 @@ fun CurrentScreen(
     viewModel: CurrentViewModel = viewModel(),
     modifier: Modifier = Modifier,
 ) {
-    val ctx = LocalContext.current
-    val appName = stringResource(id = R.string.app_name)
-    var appBarTitle by remember { mutableStateOf(appName) }
-    val coroutineScope = rememberCoroutineScope()
 
-    PermissionRequestEffect(permission = Manifest.permission.ACCESS_COARSE_LOCATION) { granted ->
-        if (granted) {
-            coroutineScope.launch {
-                val region = ctx.getRegion()
-                appBarTitle = "$appName EN ${region.uppercase()}"
-            }
-        } else {
-            appBarTitle = "$appName (Permission denied)"
-        }
+    val currentState = rememberCurrentState()
+    val state by viewModel.state.collectAsState()
+
+    currentState.AskRegionEffect(currentState) {
         viewModel.onUiReady()
     }
 
@@ -71,12 +51,10 @@ fun CurrentScreen(
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text(text = appBarTitle) }
+                    title = { Text(text = currentState.appBarTitle) }
                 )
             }
         ) { padding ->
-
-            val state by viewModel.state.collectAsState()
 
             if (state.loading) {
                 LoadingProgressIndicator(modifier = modifier.padding(padding))
