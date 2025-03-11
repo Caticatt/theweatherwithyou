@@ -1,10 +1,10 @@
 package com.alexcfa.yourweather.ui.screens.hourly
 
-import Hourly
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.alexcfa.yourweather.data.HourlyModel
 import com.alexcfa.yourweather.data.WeatherRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,13 +23,13 @@ class HourlyViewModel : ViewModel() {
     fun onUiReady() {
         viewModelScope.launch {
             _state.value = UiState(loading = true)
-            _state.value = UiState(loading = false, hourly = repository.fetchHourlyLocationData())
+            repository.fetchHourlyLocationData()?.let { _state.value = UiState(loading = false, hourly = it) }
         }
     }
 
     data class UiState(
         val loading: Boolean = false,
-        val hourly: List<Hourly> = emptyList(),
+        val hourly: List<HourlyModel> = emptyList(),
         val message: String? = null
     )
 

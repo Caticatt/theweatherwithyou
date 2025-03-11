@@ -1,7 +1,5 @@
 package com.alexcfa.yourweather.data
 
-import CurrentLocationResponse
-import HistoricalDataResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 

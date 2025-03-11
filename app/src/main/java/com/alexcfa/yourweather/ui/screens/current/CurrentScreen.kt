@@ -1,6 +1,5 @@
 package com.alexcfa.yourweather.ui.screens.current
 
-import CurrentLocationResponse
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -28,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.alexcfa.yourweather.data.CurrentLocationModel
 import com.alexcfa.yourweather.ui.common.LoadingProgressIndicator
 import com.alexcfa.yourweather.ui.screens.Screen
 
@@ -60,9 +60,9 @@ fun CurrentScreen(
                 LoadingProgressIndicator(modifier = modifier.padding(padding))
             }
 
-            state.currentLocationResponse?.let { currentLocationResponse ->
+            state.currentLocation?.let { currentLocation ->
                 CurrentLocationExtraction(
-                    currentLocationResponse = currentLocationResponse,
+                    currentLocation = currentLocation,
                     modifier = Modifier.padding(padding),
                     onHourlyClick
                 )
@@ -75,7 +75,7 @@ fun CurrentScreen(
 
 @Composable
 private fun CurrentLocationExtraction(
-    currentLocationResponse: CurrentLocationResponse,
+    currentLocation: CurrentLocationModel,
     modifier: Modifier = Modifier,
     onHourlyClick: () -> Unit
 ) {
@@ -92,7 +92,7 @@ private fun CurrentLocationExtraction(
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "${currentLocationResponse.location.name}, ${currentLocationResponse.location.country}  ${currentLocationResponse.current.observationTime}",
+                text = "${currentLocation.location?.name}, ${currentLocation.location?.country}  ${currentLocation.current?.observationTime}",
                 style = MaterialTheme.typography.headlineLarge
             )
         }
@@ -116,17 +116,18 @@ private fun CurrentLocationExtraction(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 AsyncImage(
-                    model = currentLocationResponse.current.weatherIcons[0],
+                    model = currentLocation.current?.weatherIcons?.get(0),
                     contentDescription = "timeimage",
                     modifier = modifier
                         .height(200.dp)
                         .clip(MaterialTheme.shapes.small)
                 )
                 Text(
-                    text = currentLocationResponse.current.weatherDescriptions[0],
+                    text = currentLocation.current?.weatherDescriptions?.get(0).toString(),
                     style = MaterialTheme.typography.titleLarge,
                     modifier = modifier.align(Alignment.CenterHorizontally)
                 )
+
             }
 
             Column(
@@ -137,7 +138,7 @@ private fun CurrentLocationExtraction(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "${currentLocationResponse.current.temperature}ºC",
+                    text = "${currentLocation.current?.temperature}ºC",
                     style = MaterialTheme.typography.displayLarge,
                     modifier = modifier.align(Alignment.CenterHorizontally)
                 )
@@ -153,17 +154,17 @@ private fun CurrentLocationExtraction(
             horizontalAlignment = Alignment.Start
         ) {
             Text(
-                text = "Viento: ${currentLocationResponse.current.windSpeed} kmph",
+                text = "Viento: ${currentLocation.current?.windSpeed} kmph",
                 style = MaterialTheme.typography.titleLarge,
                 modifier = modifier
             )
             Text(
-                text = "Precipitación: ${currentLocationResponse.current.precip} mm",
+                text = "Precipitación: ${currentLocation.current?.precip} mm",
                 style = MaterialTheme.typography.titleLarge,
                 modifier = modifier
             )
             Text(
-                text = "Presión: ${currentLocationResponse.current.pressure} mb",
+                text = "Presión: ${currentLocation.current?.pressure} mb",
                 style = MaterialTheme.typography.titleLarge,
                 modifier = modifier
             )

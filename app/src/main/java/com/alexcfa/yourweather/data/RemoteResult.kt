@@ -1,154 +1,156 @@
+package com.alexcfa.yourweather.data
+
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class CurrentLocationResponse(
     @SerialName("request")
-    val request: Request,
+    val request: Request?,
     @SerialName("location")
-    val location: Location,
+    val location: Location?,
     @SerialName("current")
-    val current: Current
+    val current: Current?
 )
 
 @Serializable
 data class HistoricalDataResponse(
     @SerialName("request")
-    val request: Request,
+    val request: Request?,
     @SerialName("location")
-    val location: Location,
+    val location: Location?,
     @SerialName("current")
-    val current: Current,
+    val current: Current?,
     @SerialName("historical")
-    val historical: Map<String, Historical>
+    val historical: Map<String, Historical>?
 )
 
 @Serializable
 data class Historical(
     @SerialName("date")
-    val date: String,
+    val date: String?,
     @SerialName("date_epoch")
-    val dateEpoch: Int,
+    val dateEpoch: Int?,
     @SerialName("astro")
-    val astro: Astro,
+    val astro: Astro?,
     @SerialName("mintemp")
-    val mintemp: Int,
+    val mintemp: Int?,
     @SerialName("maxtemp")
-    val maxtemp: Int,
+    val maxtemp: Int?,
     @SerialName("avgtemp")
-    val avgtemp: Int,
+    val avgtemp: Int?,
     @SerialName("totalsnow")
-    val totalsnow: Int,
+    val totalsnow: Int?,
     @SerialName("sunhour")
-    val sunhour: Int,
+    val sunhour: Int?,
     @SerialName("uv_index")
-    val uvIndex: Int,
+    val uvIndex: Int?,
     @SerialName("hourly")
-    val hourly: List<Hourly>
+    val hourlyList: List<Hourly>?
 )
 
 
 @Serializable
 data class Request(
     @SerialName("type")
-    val type: String,
+    val type: String?,
     @SerialName("query")
-    val query: String,
+    val query: String?,
     @SerialName("language")
-    val language: String,
+    val language: String?,
     @SerialName("unit")
-    val unit: String
+    val unit: String?
 )
 
 @Serializable
 data class Location(
     @SerialName("name")
-    val name: String,
+    val name: String?,
     @SerialName("country")
-    val country: String,
+    val country: String?,
     @SerialName("region")
-    val region: String,
+    val region: String?,
     @SerialName("lat")
-    val lat: String,
+    val lat: String?,
     @SerialName("lon")
-    val lon: String,
+    val lon: String?,
     @SerialName("timezone_id")
-    val timezoneId: String,
+    val timezoneId: String?,
     @SerialName("localtime")
-    val localtime: String,
+    val localtime: String?,
     @SerialName("localtime_epoch")
-    val localtimeEpoch: Int,
+    val localtimeEpoch: Int?,
     @SerialName("utc_offset")
-    val utcOffset: String
+    val utcOffset: String?
 )
 
 @Serializable
 data class Current(
     @SerialName("observation_time")
-    val observationTime: String,
+    val observationTime: String?,
     @SerialName("temperature")
-    val temperature: Int,
+    val temperature: Int?,
     @SerialName("weather_code")
-    val weatherCode: Int,
+    val weatherCode: Int?,
     @SerialName("weather_icons")
-    val weatherIcons: List<String>,
+    val weatherIcons: List<String>?,
     @SerialName("weather_descriptions")
-    val weatherDescriptions: List<String>,
+    val weatherDescriptions: List<String>?,
     @SerialName("wind_speed")
-    val windSpeed: Int,
+    val windSpeed: Int?,
     @SerialName("wind_degree")
-    val windDegree: Int,
+    val windDegree: Int?,
     @SerialName("wind_dir")
-    val windDir: String,
+    val windDir: String?,
     @SerialName("pressure")
-    val pressure: Int,
+    val pressure: Int?,
     @SerialName("precip")
-    val precip: Double,
+    val precip: Double?,
     @SerialName("humidity")
-    val humidity: Int,
+    val humidity: Int?,
     @SerialName("cloudcover")
-    val cloudcover: Int,
+    val cloudcover: Int?,
     @SerialName("feelslike")
-    val feelslike: Int,
+    val feelslike: Int?,
     @SerialName("uv_index")
-    val uvIndex: Int,
+    val uvIndex: Int?,
     @SerialName("visibility")
-    val visibility: Int,
+    val visibility: Int?,
     @SerialName("is_day")
-    val isDay: String
+    val isDay: String?
 )
 
 @Serializable
 data class Astro(
     @SerialName("sunrise")
-    val sunrise: String,
+    val sunrise: String?,
     @SerialName("sunset")
-    val sunset: String,
+    val sunset: String?,
     @SerialName("moonrise")
-    val moonrise: String,
+    val moonrise: String?,
     @SerialName("moonset")
-    val moonset: String,
+    val moonset: String?,
     @SerialName("moon_phase")
-    val moonPhase: String,
+    val moonPhase: String?,
     @SerialName("moon_illumination")
-    val moonIllumination: Int
+    val moonIllumination: Int?
 )
 
 @Serializable
 data class Hourly(
     @SerialName("time")
-    val time: String,
+    val time: String?,
     @SerialName("temperature")
-    val temperature: Int,
+    val temperature: Int?,
     @SerialName("wind_speed")
-    val windSpeed: Int,
+    val windSpeed: Int?,
     @SerialName("weather_icons")
     val weatherIcons: List<String>,
     @SerialName("weather_descriptions")
-    val weatherDescriptions: List<String>,
+    val weatherDescriptions: List<String>?,
     @SerialName("precip")
-    val precip: Int,
+    val precip: Double? ,
     @SerialName("pressure")
-    val pressure: Int
+    val pressure: Int?
 )
 
