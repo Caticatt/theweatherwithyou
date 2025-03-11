@@ -1,7 +1,10 @@
 package com.alexcfa.yourweather.data
 
+import Current
 import CurrentLocationResponse
 import Hourly
+import Location
+import Request
 import android.os.Build
 import androidx.annotation.RequiresApi
 import java.time.LocalDate
@@ -26,8 +29,11 @@ class WeatherRepository {
     suspend fun fetchCurrentLocation(
         query: String = "Madrid, ES",
         units: String = UNITS
-    ): CurrentLocationResponse =
-        WeatherClient.instance.fetchCurrentLocationWeather(query, units)
+    ): CurrentLocationModel? =
+        WeatherClient.instance.fetchCurrentLocationWeather(query, units).toDomainModel()
+
+    //CurrentLocationResponse = WeatherClient.instance.fetchCurrentLocationWeather(query, units)
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun fetchHourlyLocationData(
@@ -36,19 +42,19 @@ class WeatherRepository {
         hourly: Int = HOURLY,
         interval: Int = INTERVAL,
         units: String = UNITS
-    ): List<Hourly> =
+    ): List<HourlyModel>? =
         WeatherClient.instance.fetchHistoricalWeather(
             query,
             historicalDate,
             hourly,
             interval,
             units
-        ).historical.values.firstOrNull()?.hourly!!.map {
+        ).historical?.values?.firstOrNull()?.hourlyList?.map {
             it.toDomainModel()
         }
 }
 
-private fun Hourly.toDomainModel(): Hourly = Hourly(
+private fun Hourly.toDomainModel(): HourlyModel = HourlyModel(
     time = time,
     temperature = temperature,
     windSpeed = windSpeed,
@@ -56,4 +62,26 @@ private fun Hourly.toDomainModel(): Hourly = Hourly(
     weatherDescriptions = weatherDescriptions,
     precip = precip,
     pressure = pressure
+)
+
+private fun CurrentLocationResponse.toDomainModel(): CurrentLocationModel = CurrentLocationModel(
+    request = request,
+    location = location,
+    current = current
+)
+
+data class HourlyModel(
+    val time: String?,
+    val temperature: Int?,
+    val windSpeed: Int?,
+    val weatherIcons: List<String>,
+    val weatherDescriptions: List<String>?,
+    val precip: Double?,
+    val pressure: Int?
+)
+
+data class CurrentLocationModel(
+    val request: Request?,
+    val location: Location?,
+    val current: Current?
 )

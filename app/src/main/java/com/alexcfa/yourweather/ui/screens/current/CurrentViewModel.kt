@@ -1,8 +1,8 @@
 package com.alexcfa.yourweather.ui.screens.current
 
-import CurrentLocationResponse
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.alexcfa.yourweather.data.CurrentLocationModel
 import com.alexcfa.yourweather.data.WeatherRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,14 +21,14 @@ class CurrentViewModel : ViewModel() {
             _state.value = UiState(loading = true)
             _state.value = UiState(
                 loading = false,
-                currentLocationResponse = repository.fetchCurrentLocation()
+                currentLocation = repository.fetchCurrentLocation()
             )
         }
     }
 
     data class UiState(
         val loading: Boolean = false,
-        val currentLocationResponse: CurrentLocationResponse? = null
+        val currentLocation: CurrentLocationModel? = null
     )
 
 }

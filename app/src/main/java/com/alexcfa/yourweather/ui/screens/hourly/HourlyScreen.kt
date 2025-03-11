@@ -1,6 +1,5 @@
 package com.alexcfa.yourweather.ui.screens.hourly
 
-import Hourly
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -42,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.alexcfa.yourweather.R
+import com.alexcfa.yourweather.data.HourlyModel
 import com.alexcfa.yourweather.ui.common.LoadingProgressIndicator
 import com.alexcfa.yourweather.ui.common.getActualDateString
 import com.alexcfa.yourweather.ui.screens.Screen
@@ -109,7 +109,7 @@ fun HourlyScreen(
                         )
                     }
                 }
-                items(state.hourly, key = { it.time }) {
+                items(state.hourly, key = { it.time.toString() }) {
                     WeatherItem(hourly = it)
                 }
             }
@@ -141,7 +141,7 @@ fun HourlyTopBar(
 }
 
 @Composable
-fun WeatherItem(hourly: Hourly) {
+fun WeatherItem(hourly: HourlyModel) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -149,7 +149,7 @@ fun WeatherItem(hourly: Hourly) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = hourly.time,
+            text = hourly.time.toString(),
             style = MaterialTheme.typography.bodySmall,
             maxLines = 1,
             modifier = Modifier
@@ -164,12 +164,14 @@ fun WeatherItem(hourly: Hourly) {
                     .background(Color.Gray)
                     .clip(MaterialTheme.shapes.extraSmall)
             )
-            Text(
-                text = hourly.weatherDescriptions[0],
-                style = MaterialTheme.typography.bodySmall,
-                maxLines = 1,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            )
+            hourly.weatherDescriptions?.let {
+                Text(
+                    text = it[0],
+                    style = MaterialTheme.typography.bodySmall,
+                    maxLines = 1,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+            }
         }
         Text(
             text = hourly.temperature.toString(),
