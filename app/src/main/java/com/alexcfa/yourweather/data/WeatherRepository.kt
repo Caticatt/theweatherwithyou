@@ -1,10 +1,5 @@
 package com.alexcfa.yourweather.data
 
-import Current
-import CurrentLocationResponse
-import Hourly
-import Location
-import Request
 import android.os.Build
 import androidx.annotation.RequiresApi
 import java.time.LocalDate
@@ -31,9 +26,6 @@ class WeatherRepository {
         units: String = UNITS
     ): CurrentLocationModel? =
         WeatherClient.instance.fetchCurrentLocationWeather(query, units).toDomainModel()
-
-    //CurrentLocationResponse = WeatherClient.instance.fetchCurrentLocationWeather(query, units)
-
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun fetchHourlyLocationData(
@@ -68,20 +60,4 @@ private fun CurrentLocationResponse.toDomainModel(): CurrentLocationModel = Curr
     request = request,
     location = location,
     current = current
-)
-
-data class HourlyModel(
-    val time: String?,
-    val temperature: Int?,
-    val windSpeed: Int?,
-    val weatherIcons: List<String>,
-    val weatherDescriptions: List<String>?,
-    val precip: Double?,
-    val pressure: Int?
-)
-
-data class CurrentLocationModel(
-    val request: Request?,
-    val location: Location?,
-    val current: Current?
 )

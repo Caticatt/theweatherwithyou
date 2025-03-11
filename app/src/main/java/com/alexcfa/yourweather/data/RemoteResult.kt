@@ -1,3 +1,5 @@
+package com.alexcfa.yourweather.data
+
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

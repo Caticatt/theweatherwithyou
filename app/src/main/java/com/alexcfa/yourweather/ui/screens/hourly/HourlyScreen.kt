@@ -164,14 +164,12 @@ fun WeatherItem(hourly: HourlyModel) {
                     .background(Color.Gray)
                     .clip(MaterialTheme.shapes.extraSmall)
             )
-            hourly.weatherDescriptions?.let {
-                Text(
-                    text = it[0],
-                    style = MaterialTheme.typography.bodySmall,
-                    maxLines = 1,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
-            }
+            Text(
+                text = hourly.weatherDescriptions?.get(0).toString(),
+                style = MaterialTheme.typography.bodySmall,
+                maxLines = 1,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
         }
         Text(
             text = hourly.temperature.toString(),
