@@ -6,7 +6,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 
-class WeatherRepository {
+class WeatherRepository (private val regionRepository: RegionRepository) {
 
     companion object {
         const val UNITS = "m"
@@ -22,21 +22,19 @@ class WeatherRepository {
     }
 
     suspend fun fetchCurrentLocation(
-        query: String = "Madrid, ES",
         units: String = UNITS
     ): CurrentLocationModel? =
-        WeatherClient.instance.fetchCurrentLocationWeather(query, units).toDomainModel()
+        WeatherClient.instance.fetchCurrentLocationWeather(regionRepository.findLastRegion(), units).toDomainModel()
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun fetchHourlyLocationData(
-        query: String = "Madrid, ES",
         historicalDate: String = getActualDate(),
         hourly: Int = HOURLY,
         interval: Int = INTERVAL,
         units: String = UNITS
     ): List<HourlyModel>? =
         WeatherClient.instance.fetchHistoricalWeather(
-            query,
+            regionRepository.findLastRegion(),
             historicalDate,
             hourly,
             interval,

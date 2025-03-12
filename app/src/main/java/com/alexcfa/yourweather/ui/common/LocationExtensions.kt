@@ -18,9 +18,9 @@ import kotlin.coroutines.resume
 const val DEFAULT_REGION = "ES"
 
 suspend fun Context.getRegion(): String {
+
     val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
     val location = fusedLocationClient.lastLocation()
-
     val geocoder = Geocoder(this)
     val addresses = location?.let {
         geocoder.getFromLocationCompat(it.latitude, it.longitude, 1)
@@ -43,8 +43,6 @@ suspend fun Context.getLocationDataString(): LocationDataString {
 
     return LocationDataString(latitude, longitude)
 }
-
-
 
 @SuppressLint("MissingPermission")
 suspend fun FusedLocationProviderClient.lastLocation(): Location? {
