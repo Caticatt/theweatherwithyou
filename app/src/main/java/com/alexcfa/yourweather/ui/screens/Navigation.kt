@@ -12,6 +12,7 @@ import com.alexcfa.yourweather.data.RegionRepository
 import com.alexcfa.yourweather.data.WeatherRepository
 import com.alexcfa.yourweather.data.datasource.LocationDatasource
 import com.alexcfa.yourweather.data.datasource.RegionDataSource
+import com.alexcfa.yourweather.data.datasource.WeatherRemoteDataSource
 import com.alexcfa.yourweather.ui.screens.current.CurrentScreen
 import com.alexcfa.yourweather.ui.screens.current.CurrentViewModel
 import com.alexcfa.yourweather.ui.screens.hourly.HourlyScreen
@@ -29,12 +30,8 @@ fun Navigation() {
     val navController = rememberNavController()
     val app = LocalContext.current.applicationContext as Application
     val weatherRepository = WeatherRepository(
-        RegionRepository(
-            RegionDataSource(
-                app,
-                LocationDatasource(app)
-            )
-        )
+        RegionRepository(RegionDataSource(app, LocationDatasource(app))),
+        WeatherRemoteDataSource()
     )
     NavHost(navController = navController, startDestination = NavScreen.CurrentScreen.route) {
         composable(NavScreen.CurrentScreen.route) {
