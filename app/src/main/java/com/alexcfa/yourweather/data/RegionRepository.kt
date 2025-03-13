@@ -1,26 +1,15 @@
 package com.alexcfa.yourweather.data
 
-import android.app.Application
-import android.location.Geocoder
-import android.location.Location
-import com.google.android.gms.location.LocationServices
-import com.alexcfa.yourweather.ui.common.getFromLocationCompat
-import com.alexcfa.yourweather.ui.common.lastLocation
+import com.alexcfa.yourweather.data.datasource.RegionDataSource
 
-const val DEFAULT_REGION = "ES"
 
-class RegionRepository(app: Application) {
+const val DEFAULT_LATITUDE = "40.416775" // Default latitude string
+const val DEFAULT_LONGITUDE = "-3.703790" // Default longitude string
 
-    private val fusedLocationClient = LocationServices.getFusedLocationProviderClient(app)
-    private val geocoder = Geocoder(app)
+class RegionRepository(private val regionDataSource: RegionDataSource) {
 
-    suspend fun findLastRegion(): String = fusedLocationClient.lastLocation()?.toRegion() ?: DEFAULT_REGION
+    suspend fun findLastRegion(): String = regionDataSource.findLastRegion()
 
-    private suspend fun Location.toRegion(): String {
-        val addresses = geocoder.getFromLocationCompat(latitude, longitude, 1)
-        val region = addresses?.firstOrNull()?.countryCode
-        return region ?: DEFAULT_REGION
-    }
+    suspend fun findLastRegionComplete(): String = regionDataSource.findLastRegionComplete()
 
 }
-

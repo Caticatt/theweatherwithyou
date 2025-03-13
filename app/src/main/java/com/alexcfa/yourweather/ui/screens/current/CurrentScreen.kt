@@ -1,5 +1,6 @@
 package com.alexcfa.yourweather.ui.screens.current
 
+import android.Manifest
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -23,12 +24,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.alexcfa.yourweather.data.CurrentLocationModel
 import com.alexcfa.yourweather.ui.common.LoadingProgressIndicator
+import com.alexcfa.yourweather.ui.common.PermissionRequestEffect
 import com.alexcfa.yourweather.ui.screens.Screen
 
 
@@ -36,14 +36,14 @@ import com.alexcfa.yourweather.ui.screens.Screen
 @Composable
 fun CurrentScreen(
     onHourlyClick: () -> Unit,
-    viewModel: CurrentViewModel = viewModel(),
+    viewModel: CurrentViewModel ,
     modifier: Modifier = Modifier,
 ) {
 
     val currentState = rememberCurrentState()
     val state by viewModel.state.collectAsState()
 
-    currentState.AskRegionEffect(currentState) {
+    PermissionRequestEffect(Manifest.permission.ACCESS_COARSE_LOCATION) {
         viewModel.onUiReady()
     }
 
@@ -182,11 +182,5 @@ private fun CurrentLocationExtraction(
     }
 }
 
-@Preview
-@Composable
-fun CurrentScreenPreview() {
-    CurrentScreen(
-        onHourlyClick = {}
-    )
-}
+
 
