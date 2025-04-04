@@ -17,11 +17,6 @@
         android:windowSoftInputMode="adjustResize"
         tools:targetApi="31">
         <activity
-            android:name=".ui.screens.forecast.ForecasScreen"
-            android:exported="false"
-            android:label="@string/title_activity_forecas_screen"
-            android:theme="@style/Theme.YourWeather" />
-        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"

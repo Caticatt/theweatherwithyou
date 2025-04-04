@@ -3,10 +3,10 @@ package com.alexcfa.yourweather.data.datasource
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.alexcfa.yourweather.data.CurrentLocationModel
-import com.alexcfa.yourweather.data.CurrentLocationResponse
-import com.alexcfa.yourweather.data.Hourly
+import com.alexcfa.yourweather.data.remote.CurrentLocationResponse
+import com.alexcfa.yourweather.data.remote.Hourly
 import com.alexcfa.yourweather.data.HourlyModel
-import com.alexcfa.yourweather.data.WeatherClient
+import com.alexcfa.yourweather.data.remote.WeatherClient
 import com.alexcfa.yourweather.ui.common.getActualDate
 
 class WeatherRemoteDataSource {
@@ -44,16 +44,14 @@ class WeatherRemoteDataSource {
         ).historical?.values?.firstOrNull()?.hourlyList?.map {
             it.toDomainModel()
         }
-
-
 }
 
 private fun Hourly.toDomainModel(): HourlyModel = HourlyModel(
     time = time,
     temperature = temperature,
     windSpeed = windSpeed,
-    weatherIcons = weatherIcons,
-    weatherDescriptions = weatherDescriptions,
+    weatherIcons = weatherIcons?.filterNotNull() ?: emptyList(),
+    weatherDescriptions = weatherDescriptions?.filterNotNull() ?: emptyList(),
     precip = precip,
     pressure = pressure
 )

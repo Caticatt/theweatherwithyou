@@ -1,5 +1,9 @@
 package com.alexcfa.yourweather.data
 
+import com.alexcfa.yourweather.data.remote.Current
+import com.alexcfa.yourweather.data.remote.Location
+import com.alexcfa.yourweather.data.remote.Request
+
 data class HourlyModel(
     val time: String?,
     val temperature: Int?,
