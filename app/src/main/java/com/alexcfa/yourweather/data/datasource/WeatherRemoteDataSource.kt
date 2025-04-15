@@ -25,7 +25,7 @@ class WeatherRemoteDataSource {
     suspend fun fetchCurrentLocation(
         query: String,
         units: String = UNITS
-    ): CurrentLocationModel? =
+    ): CurrentLocationModel =
         WeatherClient.instance.fetchCurrentLocationWeather(
             query,
             units
@@ -60,7 +60,7 @@ private fun Hourly.toDomainModel(): HourlyModel = HourlyModel(
     pressure = pressure
 )
 
-fun HourlyForecastEntity.toDomainModel(): HourlyModel {
+fun HourlyForecastEntity.toHDomainModel(): HourlyModel {
     return HourlyModel(
         time = time,
         temperature = temperature,
@@ -78,7 +78,7 @@ private fun CurrentLocationResponse.toDomainModel(): CurrentLocationModel = Curr
     current = current
 )
 
-fun CurrentWeatherEntity.toDomainModel(): CurrentLocationModel {
+fun CurrentWeatherEntity.toCDomainModel(): CurrentLocationModel {
     return CurrentLocationModel(
         location = Location(
             name = locationName,
@@ -98,7 +98,7 @@ fun CurrentWeatherEntity.toDomainModel(): CurrentLocationModel {
     )
 }
 
-fun CurrentLocationModel.toEntity(): CurrentWeatherEntity {
+fun CurrentLocationModel.toCurrentEntity(): CurrentWeatherEntity {
     return CurrentWeatherEntity(
         locationName = location?.name ?: "",
         country = location?.country ?: "",
@@ -113,7 +113,7 @@ fun CurrentLocationModel.toEntity(): CurrentWeatherEntity {
     )
 }
 
-fun HourlyModel.toEntity(locationName: String): HourlyForecastEntity {
+fun HourlyModel.toHourlyEntity(locationName: String): HourlyForecastEntity {
     return HourlyForecastEntity(
         locationName = locationName,
         time = time ?: "",

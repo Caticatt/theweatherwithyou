@@ -3,7 +3,10 @@ package com.alexcfa.yourweather.data
 import com.alexcfa.yourweather.data.database.CurrentWeatherDao
 import com.alexcfa.yourweather.data.database.HourlyForecastDao
 
-class WeatherLocalDataSource ( private val  currentWeatherDao: CurrentWeatherDao, private val hourlyForecastDao: HourlyForecastDao) {
+class WeatherLocalDataSource(
+    private val currentWeatherDao: CurrentWeatherDao,
+    private val hourlyForecastDao: HourlyForecastDao
+) {
 
     suspend fun insertCurrentWeather(weather: CurrentWeatherEntity) {
         currentWeatherDao.insertCurrentWeather(weather)
@@ -33,7 +36,11 @@ class WeatherLocalDataSource ( private val  currentWeatherDao: CurrentWeatherDao
         hourlyForecastDao.deleteHourlyForecastsByLocation(location)
     }
 
-    suspend fun getHourlyForecastsForDay(location: String, date: String): List<HourlyForecastEntity> {
+    suspend fun getHourlyForecastsForDay(
+        location: String,
+        date: String
+    ): List<HourlyForecastEntity> {
         return hourlyForecastDao.getHourlyForecastsForDay(location, date)
     }
+
 }
