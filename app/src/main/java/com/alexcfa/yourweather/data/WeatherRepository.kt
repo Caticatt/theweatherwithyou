@@ -7,7 +7,7 @@ import com.alexcfa.yourweather.data.datasource.WeatherRemoteDataSource
 
 class WeatherRepository(
     private val regionRepository: RegionRepository,
-    private val remoteDataSource: WeatherRemoteDataSource = WeatherRemoteDataSource()
+    private val remoteDataSource: WeatherRemoteDataSource
 ) {
 
     suspend fun fetchCurrentLocation(): CurrentLocationModel? =
