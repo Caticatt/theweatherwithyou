@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Refresh
@@ -109,9 +110,13 @@ fun HourlyScreen(
                         )
                     }
                 }
-                items(state.hourly, key = { it.time.toString() }) {
-                    WeatherItem(hourly = it)
+                val hourlyList = state.hourly
+                itemsIndexed(hourlyList) { index, hourly ->
+                    WeatherItem(hourly)
                 }
+              /*  items(state.hourly, key = { it.time.toString() }) {
+                    WeatherItem(hourly = it)
+                }*/
             }
             viewModel.onUiReady()
         }

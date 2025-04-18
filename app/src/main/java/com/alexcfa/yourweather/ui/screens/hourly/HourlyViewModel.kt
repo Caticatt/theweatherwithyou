@@ -21,7 +21,7 @@ class HourlyViewModel (private val repository: WeatherRepository): ViewModel() {
     fun onUiReady() {
         viewModelScope.launch {
             _state.value = UiState(loading = true)
-            repository.fetchHourlyLocationData()?.let { _state.value = UiState(loading = false, hourly = it) }
+            repository.fetchHourlyLocationData().let { _state.value = UiState(loading = false, hourly = it) }
         }
     }
 

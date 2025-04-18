@@ -49,5 +49,6 @@ data class HourlyForecastEntity(
     val weatherIconUrl: String,
     val windSpeed: Int,
     val pressure: Int,
-    val precip: Double
+    val precip: Double,
+    val lastUpdated: Long = System.currentTimeMillis()
 )

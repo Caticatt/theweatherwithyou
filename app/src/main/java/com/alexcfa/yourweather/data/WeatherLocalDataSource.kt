@@ -32,6 +32,10 @@ class WeatherLocalDataSource(
         return hourlyForecastDao.getHourlyForecastsByLocation(location)
     }
 
+    suspend fun getLastUpdateTime(location: String): Long? {
+        return hourlyForecastDao.getLastUpdateTime(location)
+    }
+
     suspend fun deleteHourlyForecastsByLocation(location: String) {
         hourlyForecastDao.deleteHourlyForecastsByLocation(location)
     }

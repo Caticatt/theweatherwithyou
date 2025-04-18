@@ -21,7 +21,6 @@ class WeatherRemoteDataSource {
         const val HOURLY = 1
     }
 
-
     suspend fun fetchCurrentLocation(
         query: String,
         units: String = UNITS
@@ -125,4 +124,3 @@ fun HourlyModel.toHourlyEntity(locationName: String): HourlyForecastEntity {
         precip = precip ?: 0.0
     )
 }
-
