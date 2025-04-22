@@ -114,6 +114,7 @@ fun CurrentLocationModel.toCurrentEntity(): CurrentWeatherEntity {
 
 fun HourlyModel.toHourlyEntity(locationName: String): HourlyForecastEntity {
     return HourlyForecastEntity(
+        compositeKey = "${locationName}_${time}",
         locationName = locationName,
         time = time ?: "",
         temperature = temperature ?: 0,

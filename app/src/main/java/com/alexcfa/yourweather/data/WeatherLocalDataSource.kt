@@ -23,6 +23,8 @@ class WeatherLocalDataSource(
     suspend fun saveHourlyForecasts(forecasts: List<HourlyForecastEntity>) =
         hourlyForecastDao.saveHourlyForecasts(forecasts)
 
+    suspend fun deleteOldForecasts(location: String) = hourlyForecastDao.deleteOldForecasts(location)
+
     suspend fun getHourlyForecastsByLocation(location: String): List<HourlyForecastEntity> =
         hourlyForecastDao.getHourlyForecastsByLocation(location)
 

@@ -12,6 +12,9 @@ interface HourlyForecastDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveHourlyForecasts(forecasts: List<HourlyForecastEntity>)
 
+    @Query("DELETE FROM hourly_forecast WHERE locationName = :location")
+    suspend fun deleteOldForecasts(location: String)
+
     @Query("SELECT * FROM hourly_forecast WHERE locationName = :location ORDER BY time ASC")
     suspend fun getHourlyForecastsByLocation(location: String): List<HourlyForecastEntity>
 

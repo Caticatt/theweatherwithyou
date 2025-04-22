@@ -12,17 +12,24 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class HourlyViewModel (private val repository: WeatherRepository): ViewModel() {
+class HourlyViewModel(private val repository: WeatherRepository) : ViewModel() {
 
     private val _state = MutableStateFlow(UiState())
     val state: StateFlow<UiState> get() = _state.asStateFlow()
 
+    private var isInitialized = false
+
     @RequiresApi(Build.VERSION_CODES.O)
     fun onUiReady() {
-        viewModelScope.launch {
-            _state.value = UiState(loading = true)
-            repository.fetchHourlyLocationData().let { _state.value = UiState(loading = false, hourly = it) }
+        if (!isInitialized) {
+            isInitialized = true
+            viewModelScope.launch {
+                _state.value = UiState(loading = true)
+                repository.fetchHourlyLocationData()
+                    .let { _state.value = UiState(loading = false, hourly = it) }
+            }
         }
+
     }
 
     data class UiState(

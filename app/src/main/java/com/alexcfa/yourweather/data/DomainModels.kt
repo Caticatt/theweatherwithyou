@@ -40,8 +40,8 @@ data class CurrentWeatherEntity(
 
 @Entity(tableName = "hourly_forecast")
 data class HourlyForecastEntity(
-    @PrimaryKey(autoGenerate = true)
-    val id: Long = 0,
+    @PrimaryKey(autoGenerate = false)
+    val compositeKey: String,
     val locationName: String,
     val time: String,
     val temperature: Int,
