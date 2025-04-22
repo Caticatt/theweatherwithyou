@@ -15,42 +15,43 @@ class WeatherRepository(
 ) {
 
     companion object {
-        private const val CACHE_DURATION = 30 * 60 * 1000L // 30 minutos
+        private const val CACHE_DURATION = 30 * 60 * 1000L
     }
 
     suspend fun fetchCurrentLocation(): CurrentLocationModel {
         if (localDataSource.getLastCurrentWeather() == null) {
             val region = regionRepository.findLastRegionComplete()
             val currentWeatherData = remoteDataSource.fetchCurrentLocation(region)
-            localDataSource.insertCurrentWeather(currentWeatherData.toCurrentEntity())
+            localDataSource.saveCurrentWeather(currentWeatherData.toCurrentEntity())
         }
         return checkNotNull(localDataSource.getLastCurrentWeather()?.toCDomainModel())
     }
 
-/*    @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun fetchHourlyLocationData(): List<HourlyModel> {
-        if (localDataSource.getHourlyForecastsByLocation(regionRepository.findLastRegionComplete())
-                .isEmpty()
-        ) {
-            val region = regionRepository.findLastRegionComplete()
-            val hourlyWeatherData = remoteDataSource.fetchHourlyLocationData(region)
-            localDataSource.insertHourlyForecasts(hourlyWeatherData?.map { it.toHourlyEntity(region) }
-                ?: emptyList())
-        }
-        return localDataSource.getHourlyForecastsByLocation(regionRepository.findLastRegionComplete())
-            .map { it.toHDomainModel() }
-    }*/
+    /*    @RequiresApi(Build.VERSION_CODES.O)
+        suspend fun fetchHourlyLocationData(): List<HourlyModel> {
+            if (localDataSource.getHourlyForecastsByLocation(regionRepository.findLastRegionComplete())
+                    .isEmpty()
+            ) {
+                val region = regionRepository.findLastRegionComplete()
+                val hourlyWeatherData = remoteDataSource.fetchHourlyLocationData(region)
+                localDataSource.insertHourlyForecasts(hourlyWeatherData?.map { it.toHourlyEntity(region) }
+                    ?: emptyList())
+            }
+            return localDataSource.getHourlyForecastsByLocation(regionRepository.findLastRegionComplete())
+                .map { it.toHDomainModel() }
+        }*/
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun fetchHourlyLocationData(): List<HourlyModel> {
         val region = regionRepository.findLastRegionComplete()
         val lastUpdate = localDataSource.getLastUpdateTime(region)
-        val needsUpdate = lastUpdate == null || System.currentTimeMillis() - lastUpdate > CACHE_DURATION
+        val needsUpdate =
+            lastUpdate == null || System.currentTimeMillis() - lastUpdate > CACHE_DURATION
         if (needsUpdate) {
             val hourlyWeatherData = remoteDataSource.fetchHourlyLocationData(region)
             localDataSource.deleteHourlyForecastsByLocation(region)
             hourlyWeatherData?.let { data ->
-                localDataSource.insertHourlyForecasts(
+                localDataSource.saveHourlyForecasts(
                     data.map { it.toHourlyEntity(region) }
                 )
             }

@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -30,21 +31,26 @@ sealed class NavScreen(val route: String) {
 fun Navigation() {
     val navController = rememberNavController()
     val app = LocalContext.current.applicationContext as App
+
     val weatherRepository = WeatherRepository(
         RegionRepository(RegionDataSource(app, LocationDatasource(app))),
         WeatherLocalDataSource(app.database.currentWeatherDao(), app.database.hourlyForecastDao()),
         WeatherRemoteDataSource()
     )
+
+    val currentViewModel = CurrentViewModel(weatherRepository)
+    val hourlyViewModel = HourlyViewModel(weatherRepository)
+
     NavHost(navController = navController, startDestination = NavScreen.CurrentScreen.route) {
         composable(NavScreen.CurrentScreen.route) {
             CurrentScreen(
                 onHourlyClick = { navController.navigate(NavScreen.HourlyScreen.route) },
-                viewModel = CurrentViewModel(weatherRepository)
+                viewModel = currentViewModel
             )
         }
         composable(NavScreen.HourlyScreen.route) {
             HourlyScreen(
-                viewModel = HourlyViewModel(weatherRepository),
+                viewModel = hourlyViewModel,
                 onBack = { navController.popBackStack() }
             )
         }

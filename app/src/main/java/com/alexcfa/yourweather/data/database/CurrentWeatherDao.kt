@@ -10,7 +10,7 @@ import com.alexcfa.yourweather.data.CurrentWeatherEntity
 interface CurrentWeatherDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCurrentWeather(weather: CurrentWeatherEntity)
+    suspend fun saveCurrentWeather(weather: CurrentWeatherEntity)
 
     @Query("SELECT * FROM current_weather ORDER BY lastUpdated DESC LIMIT 1")
     suspend fun getLastCurrentWeather(): CurrentWeatherEntity?
@@ -22,4 +22,3 @@ interface CurrentWeatherDao {
     suspend fun deleteOldRecords(timestamp: Long)
 
 }
-
