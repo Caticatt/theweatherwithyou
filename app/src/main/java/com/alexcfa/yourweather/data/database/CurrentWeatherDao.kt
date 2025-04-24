@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.alexcfa.yourweather.data.CurrentWeatherEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CurrentWeatherDao {
@@ -13,10 +14,10 @@ interface CurrentWeatherDao {
     suspend fun saveCurrentWeather(weather: CurrentWeatherEntity)
 
     @Query("SELECT * FROM current_weather ORDER BY lastUpdated DESC LIMIT 1")
-    suspend fun getLastCurrentWeather(): CurrentWeatherEntity?
+    fun getLastCurrentWeather(): Flow<CurrentWeatherEntity?>
 
     @Query("SELECT * FROM current_weather WHERE locationName = :location")
-    suspend fun getCurrentWeatherByLocation(location: String): CurrentWeatherEntity?
+    fun getCurrentWeatherByLocation(location: String): Flow<CurrentWeatherEntity?>
 
     @Query("DELETE FROM current_weather WHERE lastUpdated < :timestamp")
     suspend fun deleteOldRecords(timestamp: Long)

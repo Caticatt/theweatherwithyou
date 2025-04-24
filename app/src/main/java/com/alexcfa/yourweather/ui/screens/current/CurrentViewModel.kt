@@ -19,10 +19,9 @@ class CurrentViewModel(
     fun reloadData() {
         viewModelScope.launch {
             _state.value = UiState(loading = true)
-            _state.value = UiState(
-                loading = false,
-                currentLocation = repository.fetchCurrentLocation()
-            )
+            repository.getCurrentWeatherFlow().collect {
+                _state.value = UiState(loading = false, currentLocation = it)
+            }
         }
     }
 

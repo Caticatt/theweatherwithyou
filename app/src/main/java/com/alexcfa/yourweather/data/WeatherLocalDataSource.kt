@@ -11,32 +11,21 @@ class WeatherLocalDataSource(
     suspend fun saveCurrentWeather(weather: CurrentWeatherEntity) =
         currentWeatherDao.saveCurrentWeather(weather)
 
-    suspend fun getLastCurrentWeather(): CurrentWeatherEntity? =
-        currentWeatherDao.getLastCurrentWeather()
+    val lastCurrentWeather = currentWeatherDao.getLastCurrentWeather()
 
-    suspend fun getCurrentWeatherByLocation(location: String): CurrentWeatherEntity? =
-        currentWeatherDao.getCurrentWeatherByLocation(location)
+    fun getCurrentWeatherByLocation(location: String)= currentWeatherDao.getCurrentWeatherByLocation(location)
 
     suspend fun deleteOldRecords(timestamp: Long) = currentWeatherDao.deleteOldRecords(timestamp)
 
 
-    suspend fun saveHourlyForecasts(forecasts: List<HourlyForecastEntity>) =
-        hourlyForecastDao.saveHourlyForecasts(forecasts)
+    suspend fun saveHourlyForecasts(forecasts: List<HourlyForecastEntity>) = hourlyForecastDao.saveHourlyForecasts(forecasts)
 
-    suspend fun deleteOldForecasts(location: String) = hourlyForecastDao.deleteOldForecasts(location)
+    fun getHourlyForecastsByLocation(location: String)= hourlyForecastDao.getHourlyForecastsByLocation(location)
 
-    suspend fun getHourlyForecastsByLocation(location: String): List<HourlyForecastEntity> =
-        hourlyForecastDao.getHourlyForecastsByLocation(location)
+    fun getLastUpdateTime(location: String) = hourlyForecastDao.getLastUpdateTime(location)
 
-    suspend fun getLastUpdateTime(location: String): Long? =
-        hourlyForecastDao.getLastUpdateTime(location)
+    fun getHourlyForecastsForDay(location: String, date: String)= hourlyForecastDao.getHourlyForecastsForDay(location, date)
 
-    suspend fun getHourlyForecastsForDay(
-        location: String,
-        date: String
-    ): List<HourlyForecastEntity> = hourlyForecastDao.getHourlyForecastsForDay(location, date)
-
-    suspend fun deleteHourlyForecastsByLocation(location: String) =
-        hourlyForecastDao.deleteHourlyForecastsByLocation(location)
+    suspend fun deleteHourlyForecastsByLocation(location: String) = hourlyForecastDao.deleteHourlyForecastsByLocation(location)
 
 }
