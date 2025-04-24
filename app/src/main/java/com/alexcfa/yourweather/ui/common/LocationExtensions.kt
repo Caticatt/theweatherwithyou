@@ -23,10 +23,8 @@ const val DEFAULT_LONGITUDE = "-3.703790" // Default longitude string
 suspend fun Context.getLocationDataString(): LocationDataString {
     val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
     val location = fusedLocationClient.lastLocation()
-
     val latitude = location?.latitude?.toString() ?: DEFAULT_LATITUDE
     val longitude = location?.longitude?.toString() ?: DEFAULT_LONGITUDE
-
     return LocationDataString(latitude, longitude)
 }
 

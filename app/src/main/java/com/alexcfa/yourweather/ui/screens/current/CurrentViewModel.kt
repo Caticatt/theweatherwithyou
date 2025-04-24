@@ -16,13 +16,18 @@ class CurrentViewModel(
     private val _state = MutableStateFlow(UiState())
     val state: StateFlow<UiState> get() = _state.asStateFlow()
 
-    fun onUiReady() {
+    fun reloadData() {
         viewModelScope.launch {
             _state.value = UiState(loading = true)
-            _state.value = UiState(
-                loading = false,
-                currentLocation = repository.fetchCurrentLocation()
-            )
+            repository.getCurrentWeatherFlow().collect {
+                _state.value = UiState(loading = false, currentLocation = it)
+            }
+        }
+    }
+
+    fun onUiReady() {
+        if (_state.value.currentLocation == null) {
+            reloadData()
         }
     }
 

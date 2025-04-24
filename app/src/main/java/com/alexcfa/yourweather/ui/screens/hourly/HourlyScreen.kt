@@ -109,8 +109,11 @@ fun HourlyScreen(
                         )
                     }
                 }
-                items(state.hourly, key = { it.time.toString() }) {
-                    WeatherItem(hourly = it)
+                items(
+                    items = state.hourly,
+                    key = { hourly -> "${hourly.time}-${hourly.temperature}" }
+                ) { hourly ->
+                    WeatherItem(hourly = hourly)
                 }
             }
             viewModel.onUiReady()
