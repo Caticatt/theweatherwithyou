@@ -1,31 +1,39 @@
 package com.alexcfa.yourweather.ui.screens.current
 
-import CurrentLocationResponse
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.alexcfa.yourweather.data.CurrentLocationModel
 import com.alexcfa.yourweather.data.WeatherRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class CurrentViewModel : ViewModel() {
+class CurrentViewModel(
+    private val repository: WeatherRepository
+) : ViewModel() {
 
-    var state by mutableStateOf(UiState())
-        private set
+    private val _state = MutableStateFlow(UiState())
+    val state: StateFlow<UiState> get() = _state.asStateFlow()
 
-    private val repository = WeatherRepository()
+    fun reloadData() {
+        viewModelScope.launch {
+            _state.value = UiState(loading = true)
+            repository.getCurrentWeatherFlow().collect {
+                _state.value = UiState(loading = false, currentLocation = it)
+            }
+        }
+    }
 
     fun onUiReady() {
-        viewModelScope.launch {
-            state = UiState(loading = true)
-            state = UiState(loading = false, currentLocationResponse = repository.fetchCurrentLocation())
+        if (_state.value.currentLocation == null) {
+            reloadData()
         }
     }
 
     data class UiState(
         val loading: Boolean = false,
-        val currentLocationResponse: CurrentLocationResponse? = null
+        val currentLocation: CurrentLocationModel? = null
     )
 
 }

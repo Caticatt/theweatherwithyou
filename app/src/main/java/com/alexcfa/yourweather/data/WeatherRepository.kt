@@ -1,37 +1,49 @@
 package com.alexcfa.yourweather.data
 
-import CurrentLocationResponse
-import Hourly
+import android.os.Build
+import androidx.annotation.RequiresApi
+import com.alexcfa.yourweather.data.datasource.WeatherRemoteDataSource
+import com.alexcfa.yourweather.data.datasource.toCDomainModel
+import com.alexcfa.yourweather.data.datasource.toCurrentEntity
+import com.alexcfa.yourweather.data.datasource.toHDomainModel
+import com.alexcfa.yourweather.data.datasource.toHourlyEntity
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.transform
 
-class WeatherRepository {
+class WeatherRepository(
+    private val regionRepository: RegionRepository,
+    private val localDataSource: WeatherLocalDataSource,
+    private val remoteDataSource: WeatherRemoteDataSource
+) {
 
-    //ACCESS_KEY = 1033329b803bec2c5d1c7cd972cc7f2d
+    fun getCurrentWeatherFlow(): Flow<CurrentLocationModel> =
+        localDataSource.lastCurrentWeather.transform { currentWeather ->
+                if (currentWeather == null) {
+                    val region = regionRepository.findLastRegionComplete()
+                    val remoteData = remoteDataSource.fetchCurrentLocation(region)
+                    localDataSource.saveCurrentWeather(remoteData.toCurrentEntity())
+                    emit(remoteData)
+                } else {
+                    emit(currentWeather.toCDomainModel())
+                }
+            }
 
-    //https://api.weatherstack.com/current?access_key=ACCESS_KEY&query=NewYork
+    @RequiresApi(Build.VERSION_CODES.O)
+    suspend fun getHourlyForecastFlow(): Flow<List<HourlyModel>> =
+        localDataSource.getHourlyForecastsByLocation(regionRepository.findLastRegionComplete())
+            .transform { forecasts ->
+                if (forecasts.isEmpty()) {
+                    val region = regionRepository.findLastRegionComplete()
+                    val remoteData = remoteDataSource.fetchHourlyLocationData(region)
+                    remoteData?.let { data ->
+                        localDataSource.deleteHourlyForecastsByLocation(region)
+                        localDataSource.saveHourlyForecasts(data.map { it.toHourlyEntity(region) })
+                        emit(data)
+                    }
+                } else {
+                    emit(forecasts.map { it.toHDomainModel() })
+                }
+            }
 
-    //
 
-    suspend fun fetchCurrentLocation(): CurrentLocationResponse =
-        WeatherClient.instance.fetchCurrentLocationWeather("Madrid,Spain", "m")
-
-    suspend fun fetchHourlyLocationData(): List<Hourly> =
-        WeatherClient.instance.fetchHistoricalWeather(
-            "Madrid,Spain",
-            "2025-01-12",
-            1,
-            1,
-            "m"
-        ).historical.values.firstOrNull()?.hourly!!.map {
-            it.toDomainModel()
-        }
 }
-
-private fun Hourly.toDomainModel(): Hourly = Hourly(
-    precip = precip,
-    pressure = pressure,
-    temperature = temperature,
-    time = time,
-    weatherDescriptions = weatherDescriptions,
-    weatherIcons = weatherIcons,
-    windSpeed = windSpeed
-)
