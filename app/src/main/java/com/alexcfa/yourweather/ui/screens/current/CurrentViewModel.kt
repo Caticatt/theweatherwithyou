@@ -4,36 +4,38 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alexcfa.yourweather.data.CurrentLocationModel
 import com.alexcfa.yourweather.data.WeatherRepository
-import kotlinx.coroutines.flow.MutableStateFlow
+import com.alexcfa.yourweather.ui.Result
+import com.alexcfa.yourweather.ui.ifSuccess
+import com.alexcfa.yourweather.ui.stateAsResultIn
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class CurrentViewModel(
     private val repository: WeatherRepository
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(UiState())
-    val state: StateFlow<UiState> get() = _state.asStateFlow()
+    val state: StateFlow<Result<CurrentLocationModel>> = repository.getCurrentWeatherFlow()
+        .stateAsResultIn(viewModelScope)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = Result.Loading
+        )
 
     fun reloadData() {
         viewModelScope.launch {
-            _state.value = UiState(loading = true)
-            repository.getCurrentWeatherFlow().collect {
-                _state.value = UiState(loading = false, currentLocation = it)
-            }
+            repository.getCurrentWeatherFlow()
         }
     }
 
     fun onUiReady() {
-        if (_state.value.currentLocation == null) {
-            reloadData()
+        state.value.ifSuccess {
+            if (state.value is Result.Success) {
+                reloadData()
+            }
         }
     }
-
-    data class UiState(
-        val loading: Boolean = false,
-        val currentLocation: CurrentLocationModel? = null
-    )
 
 }
