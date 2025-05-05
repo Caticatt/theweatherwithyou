@@ -14,7 +14,7 @@ class RegionDataSource (app: Application , private val locationDatasource: Locat
 
      suspend fun findLastRegion() : String = locationDatasource.findLastLocation()?.toRegion() ?: DEFAULT_REGION
 
-     suspend fun findLastRegionComplete() : String = locationDatasource.findLastLocation()?.toRegionComplete() ?: DEFAULT_REGION_COMPLETE
+      suspend fun findLastRegionComplete() : String = locationDatasource.findLastLocation()?.toRegionComplete() ?: DEFAULT_REGION_COMPLETE
 
     private suspend fun Location.toRegion(): String {
         val addresses = geocoder.getFromLocationCompat(latitude, longitude, 1)

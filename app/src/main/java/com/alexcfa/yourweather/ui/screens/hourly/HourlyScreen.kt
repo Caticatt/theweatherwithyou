@@ -22,7 +22,6 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -42,9 +41,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.alexcfa.yourweather.R
 import com.alexcfa.yourweather.data.HourlyModel
-import com.alexcfa.yourweather.ui.common.LoadingProgressIndicator
+import com.alexcfa.yourweather.ui.Result
+import com.alexcfa.yourweather.ui.common.WScaffold
 import com.alexcfa.yourweather.ui.common.getActualDateString
-import com.alexcfa.yourweather.ui.screens.Screen
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -54,69 +53,63 @@ fun HourlyScreen(
     onBack: () -> Unit,
     viewModel: HourlyViewModel = viewModel()
 ) {
-    Screen {
+    val hourlyState = rememberHourlyState()
+    val state by viewModel.state.collectAsState()
 
-        val hourlyState = rememberHourlyState()
-        val state by viewModel.state.collectAsState()
+    val resultState = if (state.loading) {
+        Result.Loading
+    } else {
+        Result.Success(state.hourly)
+    }
 
-        hourlyState.ShowMessageEffect(message = state.message) {
-            viewModel.onMessageShown()
-        }
-
-        Scaffold(
-            topBar = {
-                val topBarTitle = stringResource(id = R.string.hourly_weather_tittle)
-                HourlyTopBar(
-                    title = topBarTitle,
-                    scrollBehavior = hourlyState.scrollBehavior,
-                    onBack = onBack,
+    WScaffold<List<HourlyModel>>(
+        state = resultState,
+        topBar = {
+            val topBarTitle = stringResource(id = R.string.hourly_weather_tittle)
+            HourlyTopBar(
+                title = topBarTitle,
+                scrollBehavior = hourlyState.scrollBehavior,
+                onBack = onBack,
+            )
+        },
+        floatingActionButton = {
+            FloatingActionButton(onClick = { viewModel.onRefreshClick() }) {
+                Icon(
+                    imageVector = Icons.Default.Refresh,
+                    contentDescription = stringResource(id = R.string.back)
                 )
-            },
-            floatingActionButton = {
-                FloatingActionButton(onClick = { viewModel.onRefreshClick() }) {
-                    Icon(
-                        imageVector = Icons.Default.Refresh,
-                        contentDescription = stringResource(id = R.string.back)
+            }
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = hourlyState.snackBarHostState)
+        },
+        modifier = Modifier
+            .nestedScroll(hourlyState.scrollBehavior.nestedScrollConnection)
+            .background(MaterialTheme.colorScheme.inversePrimary),
+        contentWindowInsets = WindowInsets.safeDrawing
+    ) { padding, hourlyData ->
+        LazyColumn(
+            contentPadding = padding
+        ) {
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(40.dp)
+                        .background(MaterialTheme.colorScheme.inversePrimary)
+                ) {
+                    Text(
+                        text = getActualDateString(),
+                        modifier = Modifier.align(Alignment.Center)
                     )
                 }
-            },
-            snackbarHost = {
-                SnackbarHost(hostState = hourlyState.snackBarHostState)
-            },
-            modifier = Modifier
-                .nestedScroll(hourlyState.scrollBehavior.nestedScrollConnection)
-                .background(MaterialTheme.colorScheme.inversePrimary),
-            contentWindowInsets = WindowInsets.safeDrawing
-        ) { padding ->
-
-            if (state.loading) {
-                LoadingProgressIndicator(modifier = Modifier.padding(padding))
             }
-
-            LazyColumn(
-                contentPadding = padding
-            ) {
-                item {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(40.dp)
-                            .background(MaterialTheme.colorScheme.inversePrimary)
-                    ) {
-                        Text(
-                            text = getActualDateString(),
-                            modifier = Modifier.align(Alignment.Center)
-                        )
-                    }
-                }
-                items(
-                    items = state.hourly,
-                    key = { hourly -> "${hourly.time}-${hourly.temperature}" }
-                ) { hourly ->
-                    WeatherItem(hourly = hourly)
-                }
+            items(
+                items = hourlyData,
+                key = { hourly -> "${hourly.time}-${hourly.temperature}" }
+            ) { hourly ->
+                WeatherItem(hourly = hourly)
             }
-            viewModel.onUiReady()
         }
     }
 }

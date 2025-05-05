@@ -18,15 +18,16 @@ class WeatherRepository(
 
     fun getCurrentWeatherFlow(): Flow<CurrentLocationModel> =
         localDataSource.lastCurrentWeather.transform { currentWeather ->
-                if (currentWeather == null) {
-                    val region = regionRepository.findLastRegionComplete()
-                    val remoteData = remoteDataSource.fetchCurrentLocation(region)
-                    localDataSource.saveCurrentWeather(remoteData.toCurrentEntity())
-                    emit(remoteData)
-                } else {
-                    emit(currentWeather.toCDomainModel())
-                }
+            if (currentWeather == null) {
+                val region = regionRepository.findLastRegionComplete()
+                val remoteData = remoteDataSource.fetchCurrentLocation(region)
+                localDataSource.saveCurrentWeather(remoteData.toCurrentEntity())
+                emit(remoteData)
+            } else {
+                emit(currentWeather.toCDomainModel())
             }
+        }
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun getHourlyForecastFlow(): Flow<List<HourlyModel>> =
@@ -44,6 +45,5 @@ class WeatherRepository(
                     emit(forecasts.map { it.toHDomainModel() })
                 }
             }
-
 
 }

@@ -14,7 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -28,19 +27,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.alexcfa.yourweather.data.CurrentLocationModel
-import com.alexcfa.yourweather.ui.common.LoadingProgressIndicator
 import com.alexcfa.yourweather.ui.common.PermissionRequestEffect
-import com.alexcfa.yourweather.ui.screens.Screen
-
+import com.alexcfa.yourweather.ui.common.WScaffold
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CurrentScreen(
     onHourlyClick: () -> Unit,
-    viewModel: CurrentViewModel ,
+    viewModel: CurrentViewModel,
     modifier: Modifier = Modifier,
 ) {
-
     val currentState = rememberCurrentState()
     val state by viewModel.state.collectAsState()
 
@@ -52,31 +48,22 @@ fun CurrentScreen(
         viewModel.onUiReady()
     }
 
-    Screen {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = { Text(text = currentState.appBarTitle) }
-                )
-            }
-        ) { padding ->
-
-            if (state.loading) {
-                LoadingProgressIndicator(modifier = modifier.padding(padding))
-            }
-
-            state.currentLocation?.let { currentLocation ->
-                CurrentLocationExtraction(
-                    currentLocation = currentLocation,
-                    modifier = Modifier.padding(padding),
-                    onHourlyClick
-                )
-            }
-
+    WScaffold(
+        state = state,
+        topBar = {
+            TopAppBar(
+                title = { Text(text = currentState.appBarTitle) }
+            )
         }
-
+    ) { padding, currentLocation ->
+        CurrentLocationExtraction(
+            currentLocation = currentLocation,
+            modifier = modifier.padding(padding),
+            onHourlyClick = onHourlyClick
+        )
     }
 }
+
 
 @Composable
 private fun CurrentLocationExtraction(
