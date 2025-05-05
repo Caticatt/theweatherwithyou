@@ -1,44 +1,56 @@
 package com.alexcfa.yourweather.ui.screens.hourly
 
-import Hourly
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.alexcfa.yourweather.data.HourlyModel
 import com.alexcfa.yourweather.data.WeatherRepository
-import kotlinx.coroutines.flow.MutableStateFlow
+import com.alexcfa.yourweather.ui.Result
+import com.alexcfa.yourweather.ui.stateAsResultIn
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class HourlyViewModel : ViewModel() {
+class HourlyViewModel(private val repository: WeatherRepository) : ViewModel() {
 
-    private val repository = WeatherRepository()
 
-    private val _state = MutableStateFlow(UiState())
-    val state: StateFlow<UiState> get() = _state.asStateFlow()
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @RequiresApi(Build.VERSION_CODES.O)
+    private val hourlyForecastFlow = flow {
+        emit(repository.getHourlyForecastFlow())
+    }.flatMapConcat { it }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun onUiReady() {
-        viewModelScope.launch {
-            _state.value = UiState(loading = true)
-            _state.value = UiState(loading = false, hourly = repository.fetchHourlyLocationData())
+    val state: StateFlow<UiState> = hourlyForecastFlow
+        .stateAsResultIn(viewModelScope)
+        .map { result ->
+            when (result) {
+                is Result.Loading -> UiState(loading = true)
+                is Result.Success -> UiState(loading = false, hourly = result.value)
+                is Result.Error -> UiState(loading = false)
+            }
         }
-    }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = UiState(loading = true)
+        )
 
     data class UiState(
         val loading: Boolean = false,
-        val hourly: List<Hourly> = emptyList(),
-        val message: String? = null
+        val hourly: List<HourlyModel> = emptyList(),
     )
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun onRefreshClick() {
-        _state.update { it.copy(message = "Tiempo actualizado") }
+        viewModelScope.launch {
+            repository.getHourlyForecastFlow()
+        }
     }
-
-    fun onMessageShown() {
-        _state.update { it.copy(message = null) }
-    }
-
 }

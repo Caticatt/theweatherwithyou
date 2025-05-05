@@ -1,6 +1,6 @@
 package com.alexcfa.yourweather.ui.screens.current
 
-import CurrentLocationResponse
+import android.Manifest
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -14,68 +14,60 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
-import com.alexcfa.yourweather.ui.common.LoadingProgressIndicator
-import com.alexcfa.yourweather.ui.screens.Screen
-
+import com.alexcfa.yourweather.data.CurrentLocationModel
+import com.alexcfa.yourweather.ui.common.PermissionRequestEffect
+import com.alexcfa.yourweather.ui.common.WScaffold
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CurrentScreen(
     onHourlyClick: () -> Unit,
-    viewModel: CurrentViewModel = viewModel(),
+    viewModel: CurrentViewModel,
     modifier: Modifier = Modifier,
 ) {
-
     val currentState = rememberCurrentState()
     val state by viewModel.state.collectAsState()
 
-    currentState.AskRegionEffect(currentState) {
+    LaunchedEffect(Unit) {
+        viewModel.reloadData()
+    }
+
+    PermissionRequestEffect(Manifest.permission.ACCESS_COARSE_LOCATION) {
         viewModel.onUiReady()
     }
 
-    Screen {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = { Text(text = currentState.appBarTitle) }
-                )
-            }
-        ) { padding ->
-
-            if (state.loading) {
-                LoadingProgressIndicator(modifier = modifier.padding(padding))
-            }
-
-            state.currentLocationResponse?.let { currentLocationResponse ->
-                CurrentLocationExtraction(
-                    currentLocationResponse = currentLocationResponse,
-                    modifier = Modifier.padding(padding),
-                    onHourlyClick
-                )
-            }
-
+    WScaffold(
+        state = state,
+        topBar = {
+            TopAppBar(
+                title = { Text(text = currentState.appBarTitle) }
+            )
         }
-
+    ) { padding, currentLocation ->
+        CurrentLocationExtraction(
+            currentLocation = currentLocation,
+            modifier = modifier.padding(padding),
+            onHourlyClick = onHourlyClick
+        )
     }
 }
 
+
 @Composable
 private fun CurrentLocationExtraction(
-    currentLocationResponse: CurrentLocationResponse,
+    currentLocation: CurrentLocationModel,
     modifier: Modifier = Modifier,
     onHourlyClick: () -> Unit
 ) {
@@ -92,7 +84,7 @@ private fun CurrentLocationExtraction(
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "${currentLocationResponse.location.name}, ${currentLocationResponse.location.country}  ${currentLocationResponse.current.observationTime}",
+                text = "${currentLocation.location?.name}, ${currentLocation.location?.country}  ${currentLocation.current?.observationTime}",
                 style = MaterialTheme.typography.headlineLarge
             )
         }
@@ -116,17 +108,18 @@ private fun CurrentLocationExtraction(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 AsyncImage(
-                    model = currentLocationResponse.current.weatherIcons[0],
+                    model = currentLocation.current?.weatherIcons?.get(0),
                     contentDescription = "timeimage",
                     modifier = modifier
                         .height(200.dp)
                         .clip(MaterialTheme.shapes.small)
                 )
                 Text(
-                    text = currentLocationResponse.current.weatherDescriptions[0],
+                    text = currentLocation.current?.weatherDescriptions?.get(0).toString(),
                     style = MaterialTheme.typography.titleLarge,
                     modifier = modifier.align(Alignment.CenterHorizontally)
                 )
+
             }
 
             Column(
@@ -137,7 +130,7 @@ private fun CurrentLocationExtraction(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "${currentLocationResponse.current.temperature}ºC",
+                    text = "${currentLocation.current?.temperature}ºC",
                     style = MaterialTheme.typography.displayLarge,
                     modifier = modifier.align(Alignment.CenterHorizontally)
                 )
@@ -153,17 +146,17 @@ private fun CurrentLocationExtraction(
             horizontalAlignment = Alignment.Start
         ) {
             Text(
-                text = "Viento: ${currentLocationResponse.current.windSpeed} kmph",
+                text = "Viento: ${currentLocation.current?.windSpeed} kmph",
                 style = MaterialTheme.typography.titleLarge,
                 modifier = modifier
             )
             Text(
-                text = "Precipitación: ${currentLocationResponse.current.precip} mm",
+                text = "Precipitación: ${currentLocation.current?.precip} mm",
                 style = MaterialTheme.typography.titleLarge,
                 modifier = modifier
             )
             Text(
-                text = "Presión: ${currentLocationResponse.current.pressure} mb",
+                text = "Presión: ${currentLocation.current?.pressure} mb",
                 style = MaterialTheme.typography.titleLarge,
                 modifier = modifier
             )
@@ -181,11 +174,5 @@ private fun CurrentLocationExtraction(
     }
 }
 
-@Preview
-@Composable
-fun CurrentScreenPreview() {
-    CurrentScreen(
-        onHourlyClick = {}
-    )
-}
+
 
