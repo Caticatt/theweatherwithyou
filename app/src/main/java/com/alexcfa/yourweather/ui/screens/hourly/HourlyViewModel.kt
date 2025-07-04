@@ -5,9 +5,9 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alexcfa.yourweather.data.HourlyModel
-import com.alexcfa.yourweather.data.WeatherRepository
 import com.alexcfa.yourweather.ui.Result
 import com.alexcfa.yourweather.ui.stateAsResultIn
+import com.alexcfa.yourweather.usecases.FetchHourlyForecastUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -17,13 +17,12 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class HourlyViewModel(private val repository: WeatherRepository) : ViewModel() {
-
+class HourlyViewModel(private val fetchHourlyForecastUseCase: FetchHourlyForecastUseCase) : ViewModel() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @RequiresApi(Build.VERSION_CODES.O)
     private val hourlyForecastFlow = flow {
-        emit(repository.getHourlyForecastFlow())
+        emit(fetchHourlyForecastUseCase())
     }.flatMapConcat { it }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -50,7 +49,7 @@ class HourlyViewModel(private val repository: WeatherRepository) : ViewModel() {
     @RequiresApi(Build.VERSION_CODES.O)
     fun onRefreshClick() {
         viewModelScope.launch {
-            repository.getHourlyForecastFlow()
+            fetchHourlyForecastUseCase
         }
     }
 }

@@ -18,6 +18,8 @@ import com.alexcfa.yourweather.ui.screens.current.CurrentScreen
 import com.alexcfa.yourweather.ui.screens.current.CurrentViewModel
 import com.alexcfa.yourweather.ui.screens.hourly.HourlyScreen
 import com.alexcfa.yourweather.ui.screens.hourly.HourlyViewModel
+import com.alexcfa.yourweather.usecases.FetchCurrentWeatherUseCase
+import com.alexcfa.yourweather.usecases.FetchHourlyForecastUseCase
 
 
 sealed class NavScreen(val route: String) {
@@ -37,8 +39,8 @@ fun Navigation() {
         WeatherRemoteDataSource()
     )
 
-    val currentViewModel = CurrentViewModel(weatherRepository)
-    val hourlyViewModel = HourlyViewModel(weatherRepository)
+    val currentViewModel = CurrentViewModel(FetchCurrentWeatherUseCase(weatherRepository))
+    val hourlyViewModel = HourlyViewModel(FetchHourlyForecastUseCase(weatherRepository))
 
     NavHost(navController = navController, startDestination = NavScreen.CurrentScreen.route) {
         composable(NavScreen.CurrentScreen.route) {

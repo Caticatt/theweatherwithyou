@@ -3,20 +3,18 @@ package com.alexcfa.yourweather.ui.screens.current
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alexcfa.yourweather.data.CurrentLocationModel
-import com.alexcfa.yourweather.data.WeatherRepository
 import com.alexcfa.yourweather.ui.Result
 import com.alexcfa.yourweather.ui.ifSuccess
 import com.alexcfa.yourweather.ui.stateAsResultIn
+import com.alexcfa.yourweather.usecases.FetchCurrentWeatherUseCase
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class CurrentViewModel(
-    private val repository: WeatherRepository
-) : ViewModel() {
+class CurrentViewModel(private val fetchCurrentWeatherUseCase: FetchCurrentWeatherUseCase) : ViewModel() {
 
-    val state: StateFlow<Result<CurrentLocationModel>> = repository.getCurrentWeatherFlow()
+    val state: StateFlow<Result<CurrentLocationModel>> = fetchCurrentWeatherUseCase()
         .stateAsResultIn(viewModelScope)
         .stateIn(
             scope = viewModelScope,
@@ -26,7 +24,7 @@ class CurrentViewModel(
 
     fun reloadData() {
         viewModelScope.launch {
-            repository.getCurrentWeatherFlow()
+            fetchCurrentWeatherUseCase
         }
     }
 
