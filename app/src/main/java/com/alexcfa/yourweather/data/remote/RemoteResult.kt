@@ -6,33 +6,33 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class CurrentLocationResponse(
     @SerialName("request")
-    val request: Request? = null,
+    val request: RemoteRequest? = null,
     @SerialName("location")
-    val location: Location? = null,
+    val location: RemoteLocation? = null,
     @SerialName("current")
-    val current: Current? = null
+    val current: RemoteCurrent? = null
 )
 
 @Serializable
 data class HistoricalDataResponse(
     @SerialName("request")
-    val request: Request? = null,
+    val request: RemoteRequest? = null,
     @SerialName("location")
-    val location: Location? = null,
+    val location: RemoteLocation? = null,
     @SerialName("current")
-    val current: Current? = null,
+    val current: RemoteCurrent? = null,
     @SerialName("historical")
-    val historical: Map<String, Historical>? = null
+    val historical: Map<String, RemoteHistorical>? = null
 )
 
 @Serializable
-data class Historical(
+data class RemoteHistorical(
     @SerialName("date")
     val date: String? = null,
     @SerialName("date_epoch")
     val dateEpoch: Int? = null,
     @SerialName("astro")
-    val astro: Astro? = null,
+    val astro: RemoteAstro? = null,
     @SerialName("mintemp")
     val mintemp: Int? = null,
     @SerialName("maxtemp")
@@ -46,12 +46,12 @@ data class Historical(
     @SerialName("uv_index")
     val uvIndex: Int? = null,
     @SerialName("hourly")
-    val hourlyList: List<Hourly>? = null
+    val hourlyList: List<RemoteHourly>? = null
 )
 
 
 @Serializable
-data class Request(
+data class RemoteRequest(
     @SerialName("type")
     val type: String? = null,
     @SerialName("query")
@@ -63,7 +63,7 @@ data class Request(
 )
 
 @Serializable
-data class Location(
+data class RemoteLocation(
     @SerialName("name")
     val name: String? = null,
     @SerialName("country")
@@ -85,7 +85,7 @@ data class Location(
 )
 
 @Serializable
-data class Current(
+data class RemoteCurrent(
     @SerialName("observation_time")
     val observationTime: String? = null,
     @SerialName("temperature")
@@ -121,7 +121,7 @@ data class Current(
 )
 
 @Serializable
-data class Astro(
+data class RemoteAstro(
     @SerialName("sunrise")
     val sunrise: String? = null,
     @SerialName("sunset")
@@ -137,7 +137,7 @@ data class Astro(
 )
 
 @Serializable
-data class Hourly(
+data class RemoteHourly(
     @SerialName("time")
     val time: String? = null,
     @SerialName("temperature")
