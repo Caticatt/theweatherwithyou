@@ -1,31 +1,56 @@
 package com.alexcfa.yourweather.ui.screens.hourly
 
-import Hourly
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.alexcfa.yourweather.data.HourlyModel
 import com.alexcfa.yourweather.data.WeatherRepository
+import com.alexcfa.yourweather.ui.Result
+import com.alexcfa.yourweather.ui.stateAsResultIn
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class HourlyViewModel : ViewModel() {
+class HourlyViewModel(private val repository: WeatherRepository) : ViewModel() {
 
-    var state by mutableStateOf(UiState())
-        private set
 
-    private val repository = WeatherRepository()
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @RequiresApi(Build.VERSION_CODES.O)
+    private val hourlyForecastFlow = flow {
+        emit(repository.getHourlyForecastFlow())
+    }.flatMapConcat { it }
 
-    fun onUiReady() {
-        viewModelScope.launch {
-            state = UiState(loading = true)
-            state = UiState(loading = false, hourly = repository.fetchHourlyLocationData())
+    @RequiresApi(Build.VERSION_CODES.O)
+    val state: StateFlow<UiState> = hourlyForecastFlow
+        .stateAsResultIn(viewModelScope)
+        .map { result ->
+            when (result) {
+                is Result.Loading -> UiState(loading = true)
+                is Result.Success -> UiState(loading = false, hourly = result.value)
+                is Result.Error -> UiState(loading = false)
+            }
         }
-    }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = UiState(loading = true)
+        )
 
     data class UiState(
         val loading: Boolean = false,
-        val hourly: List<Hourly> = emptyList()
+        val hourly: List<HourlyModel> = emptyList(),
     )
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun onRefreshClick() {
+        viewModelScope.launch {
+            repository.getHourlyForecastFlow()
+        }
+    }
 }

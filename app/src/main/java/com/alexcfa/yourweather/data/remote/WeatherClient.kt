@@ -1,4 +1,4 @@
-package com.alexcfa.yourweather.data
+package com.alexcfa.yourweather.data.remote
 
 import com.alexcfa.yourweather.BuildConfig
 import kotlinx.serialization.json.Json
@@ -38,4 +38,5 @@ private fun apiKeyAsQuery(chain: Interceptor.Chain) = chain.proceed(
                 .build()
         )
         .build()
+
 )

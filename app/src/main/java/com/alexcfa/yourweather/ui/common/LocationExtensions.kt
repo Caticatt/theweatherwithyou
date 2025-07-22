@@ -15,20 +15,6 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.resume
 
-const val DEFAULT_REGION = "ES"
-
-suspend fun Context.getRegion(): String {
-    val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-    val location = fusedLocationClient.lastLocation()
-
-    val geocoder = Geocoder(this)
-    val addresses = location?.let {
-        geocoder.getFromLocationCompat(it.latitude, it.longitude, 1)
-    }
-    val region = addresses?.firstOrNull()?.countryCode
-    return region ?: DEFAULT_REGION
-}
-
 data class LocationDataString(val latitude: String, val longitude: String)
 
 const val DEFAULT_LATITUDE = "40.416775" // Default latitude string
@@ -37,14 +23,10 @@ const val DEFAULT_LONGITUDE = "-3.703790" // Default longitude string
 suspend fun Context.getLocationDataString(): LocationDataString {
     val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
     val location = fusedLocationClient.lastLocation()
-
     val latitude = location?.latitude?.toString() ?: DEFAULT_LATITUDE
     val longitude = location?.longitude?.toString() ?: DEFAULT_LONGITUDE
-
     return LocationDataString(latitude, longitude)
 }
-
-
 
 @SuppressLint("MissingPermission")
 suspend fun FusedLocationProviderClient.lastLocation(): Location? {
