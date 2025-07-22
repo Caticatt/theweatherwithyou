@@ -24,9 +24,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.alexcfa.yourweather.data.CurrentLocationModel
+import com.alexcfa.yourweather.R
+import com.alexcfa.yourweather.domain.CurrentLocationModel
 import com.alexcfa.yourweather.ui.common.PermissionRequestEffect
 import com.alexcfa.yourweather.ui.common.WScaffold
 
@@ -109,7 +111,7 @@ private fun CurrentLocationExtraction(
             ) {
                 AsyncImage(
                     model = currentLocation.current?.weatherIcons?.get(0),
-                    contentDescription = "timeimage",
+                    contentDescription = stringResource(R.string.timeimage),
                     modifier = modifier
                         .height(200.dp)
                         .clip(MaterialTheme.shapes.small)

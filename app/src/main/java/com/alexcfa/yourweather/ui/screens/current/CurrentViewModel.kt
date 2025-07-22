@@ -2,7 +2,7 @@ package com.alexcfa.yourweather.ui.screens.current
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.alexcfa.yourweather.data.CurrentLocationModel
+import com.alexcfa.yourweather.domain.CurrentLocationModel
 import com.alexcfa.yourweather.ui.Result
 import com.alexcfa.yourweather.ui.ifSuccess
 import com.alexcfa.yourweather.ui.stateAsResultIn
@@ -24,7 +24,7 @@ class CurrentViewModel(private val fetchCurrentWeatherUseCase: FetchCurrentWeath
 
     fun reloadData() {
         viewModelScope.launch {
-            fetchCurrentWeatherUseCase
+            fetchCurrentWeatherUseCase()
         }
     }
 
