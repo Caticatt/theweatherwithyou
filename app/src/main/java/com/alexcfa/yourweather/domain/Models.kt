@@ -1,8 +1,8 @@
 package com.alexcfa.yourweather.domain
 
-import com.alexcfa.yourweather.data.remote.Current
-import com.alexcfa.yourweather.data.remote.Location
-import com.alexcfa.yourweather.data.remote.Request
+import com.alexcfa.yourweather.data.remote.RemoteCurrent
+import com.alexcfa.yourweather.data.remote.RemoteLocation
+import com.alexcfa.yourweather.data.remote.RemoteRequest
 
 data class HourlyModel(
     val time: String?,
@@ -15,12 +15,13 @@ data class HourlyModel(
 )
 
 data class CurrentLocationModel(
-    val request: Request?,
-    val location: Location?,
-    val current: Current?
+    val request: RemoteRequest?,
+    val location: RemoteLocation?,
+    val current: RemoteCurrent?
 )
 
-data class CurrentWeatherEntity(
+/*
+data class CurrentWeatherModel(
     val locationName: String,
     val country: String,
     val region: String,
@@ -34,7 +35,7 @@ data class CurrentWeatherEntity(
     val lastUpdated: Long = System.currentTimeMillis()
 )
 
-data class HourlyForecastEntity(
+data class HourlyForecastModel(
     val compositeKey: String,
     val locationName: String,
     val time: String,
@@ -45,4 +46,4 @@ data class HourlyForecastEntity(
     val pressure: Int,
     val precip: Double,
     val lastUpdated: Long = System.currentTimeMillis()
-)
+)*/
