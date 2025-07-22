@@ -1,14 +1,16 @@
 package com.alexcfa.yourweather.data
 
 import com.alexcfa.yourweather.data.database.CurrentWeatherDao
+import com.alexcfa.yourweather.data.database.DbCurrentWeather
 import com.alexcfa.yourweather.data.database.HourlyForecastDao
+import com.alexcfa.yourweather.data.database.DbHourlyForecast
 
 class WeatherLocalDataSource(
     private val currentWeatherDao: CurrentWeatherDao,
     private val hourlyForecastDao: HourlyForecastDao
 ) {
 
-    suspend fun saveCurrentWeather(weather: CurrentWeatherEntity) =
+    suspend fun saveCurrentWeather(weather: DbCurrentWeather) =
         currentWeatherDao.saveCurrentWeather(weather)
 
     val lastCurrentWeather = currentWeatherDao.getLastCurrentWeather()
@@ -18,7 +20,7 @@ class WeatherLocalDataSource(
     suspend fun deleteOldRecords(timestamp: Long) = currentWeatherDao.deleteOldRecords(timestamp)
 
 
-    suspend fun saveHourlyForecasts(forecasts: List<HourlyForecastEntity>) = hourlyForecastDao.saveHourlyForecasts(forecasts)
+    suspend fun saveHourlyForecasts(forecasts: List<DbHourlyForecast>) = hourlyForecastDao.saveHourlyForecasts(forecasts)
 
     fun getHourlyForecastsByLocation(location: String)= hourlyForecastDao.getHourlyForecastsByLocation(location)
 

@@ -2,6 +2,8 @@ package com.alexcfa.yourweather.data
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.alexcfa.yourweather.domain.CurrentLocationModel
+import com.alexcfa.yourweather.domain.HourlyModel
 import com.alexcfa.yourweather.data.datasource.WeatherRemoteDataSource
 import com.alexcfa.yourweather.data.datasource.toCDomainModel
 import com.alexcfa.yourweather.data.datasource.toCurrentEntity

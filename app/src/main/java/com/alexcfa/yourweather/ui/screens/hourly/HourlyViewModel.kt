@@ -4,7 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.alexcfa.yourweather.data.HourlyModel
+import com.alexcfa.yourweather.domain.HourlyModel
 import com.alexcfa.yourweather.ui.Result
 import com.alexcfa.yourweather.ui.stateAsResultIn
 import com.alexcfa.yourweather.usecases.FetchHourlyForecastUseCase
@@ -49,7 +49,7 @@ class HourlyViewModel(private val fetchHourlyForecastUseCase: FetchHourlyForecas
     @RequiresApi(Build.VERSION_CODES.O)
     fun onRefreshClick() {
         viewModelScope.launch {
-            fetchHourlyForecastUseCase
+            fetchHourlyForecastUseCase()
         }
     }
 }

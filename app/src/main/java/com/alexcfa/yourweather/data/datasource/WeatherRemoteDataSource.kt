@@ -2,12 +2,12 @@ package com.alexcfa.yourweather.data.datasource
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.alexcfa.yourweather.data.CurrentLocationModel
-import com.alexcfa.yourweather.data.CurrentWeatherEntity
-import com.alexcfa.yourweather.data.HourlyForecastEntity
+import com.alexcfa.yourweather.domain.CurrentLocationModel
+import com.alexcfa.yourweather.data.database.DbCurrentWeather
+import com.alexcfa.yourweather.data.database.DbHourlyForecast
 import com.alexcfa.yourweather.data.remote.CurrentLocationResponse
 import com.alexcfa.yourweather.data.remote.Hourly
-import com.alexcfa.yourweather.data.HourlyModel
+import com.alexcfa.yourweather.domain.HourlyModel
 import com.alexcfa.yourweather.data.remote.Current
 import com.alexcfa.yourweather.data.remote.Location
 import com.alexcfa.yourweather.data.remote.WeatherClient
@@ -59,17 +59,15 @@ private fun Hourly.toDomainModel(): HourlyModel = HourlyModel(
     pressure = pressure
 )
 
-fun HourlyForecastEntity.toHDomainModel(): HourlyModel {
-    return HourlyModel(
-        time = time,
-        temperature = temperature,
-        windSpeed = windSpeed,
-        weatherIcons = listOf(weatherIconUrl),
-        weatherDescriptions = listOf(weatherDescription),
-        precip = precip,
-        pressure = pressure
-    )
-}
+fun DbHourlyForecast.toHDomainModel(): HourlyModel = HourlyModel(
+    time = time,
+    temperature = temperature,
+    windSpeed = windSpeed,
+    weatherIcons = listOf(weatherIconUrl),
+    weatherDescriptions = listOf(weatherDescription),
+    precip = precip,
+    pressure = pressure
+)
 
 private fun CurrentLocationResponse.toDomainModel(): CurrentLocationModel = CurrentLocationModel(
     request = request,
@@ -77,28 +75,27 @@ private fun CurrentLocationResponse.toDomainModel(): CurrentLocationModel = Curr
     current = current
 )
 
-fun CurrentWeatherEntity.toCDomainModel(): CurrentLocationModel {
-    return CurrentLocationModel(
-        location = Location(
-            name = locationName,
-            country = country,
-            region = region
-        ),
-        current = Current(
-            temperature = temperature,
-            weatherDescriptions = listOf(weatherDescription),
-            weatherIcons = listOf(weatherIconUrl),
-            windSpeed = windSpeed,
-            pressure = pressure,
-            precip = precip,
-            observationTime = observationTime
-        ),
-        request = null
-    )
-}
+fun DbCurrentWeather.toCDomainModel() = CurrentLocationModel(
+    location = Location(
+        name = locationName,
+        country = country,
+        region = region
+    ),
+    current = Current(
+        temperature = temperature,
+        weatherDescriptions = listOf(weatherDescription),
+        weatherIcons = listOf(weatherIconUrl),
+        windSpeed = windSpeed,
+        pressure = pressure,
+        precip = precip,
+        observationTime = observationTime
+    ),
+    request = null
+)
 
-fun CurrentLocationModel.toCurrentEntity(): CurrentWeatherEntity {
-    return CurrentWeatherEntity(
+
+fun CurrentLocationModel.toCurrentEntity(): DbCurrentWeather {
+    return DbCurrentWeather(
         locationName = location?.name ?: "",
         country = location?.country ?: "",
         region = location?.region ?: "",
@@ -112,8 +109,8 @@ fun CurrentLocationModel.toCurrentEntity(): CurrentWeatherEntity {
     )
 }
 
-fun HourlyModel.toHourlyEntity(locationName: String): HourlyForecastEntity {
-    return HourlyForecastEntity(
+fun HourlyModel.toHourlyEntity(locationName: String): DbHourlyForecast {
+    return DbHourlyForecast(
         compositeKey = "${locationName}_${time}",
         locationName = locationName,
         time = time ?: "",

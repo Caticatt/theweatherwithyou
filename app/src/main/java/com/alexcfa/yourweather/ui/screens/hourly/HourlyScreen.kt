@@ -40,7 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.alexcfa.yourweather.R
-import com.alexcfa.yourweather.data.HourlyModel
+import com.alexcfa.yourweather.domain.HourlyModel
 import com.alexcfa.yourweather.ui.Result
 import com.alexcfa.yourweather.ui.common.WScaffold
 import com.alexcfa.yourweather.ui.common.getActualDateString
