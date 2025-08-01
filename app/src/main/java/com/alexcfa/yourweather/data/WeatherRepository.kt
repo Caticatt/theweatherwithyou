@@ -2,15 +2,17 @@ package com.alexcfa.yourweather.data
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.alexcfa.yourweather.data.database.DbCurrentWeather
-import com.alexcfa.yourweather.data.database.DbHourlyForecast
-import com.alexcfa.yourweather.data.datasource.WeatherServerDataSource
-import com.alexcfa.yourweather.data.remote.RemoteCurrent
-import com.alexcfa.yourweather.data.remote.RemoteLocation
 import com.alexcfa.yourweather.domain.CurrentLocationModel
+import com.alexcfa.yourweather.domain.CurrentModel
 import com.alexcfa.yourweather.domain.HourlyModel
+import com.alexcfa.yourweather.domain.LocationModel
+import com.alexcfa.yourweather.framework.database.DbCurrentWeather
+import com.alexcfa.yourweather.framework.database.DbHourlyForecast
+import com.alexcfa.yourweather.framework.WeatherRoomDataSource
+import com.alexcfa.yourweather.framework.remote.WeatherServerDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.transform
+import kotlin.String
 
 class WeatherRepository(
     private val regionRepository: RegionRepository,
@@ -51,21 +53,36 @@ class WeatherRepository(
 }
 
 fun DbCurrentWeather.toDomainCurrentModel() = CurrentLocationModel(
-    location = RemoteLocation(
+    request = null,
+    location = LocationModel(
         name = locationName,
         country = country,
-        region = region
+        region = region,
+        lat = null,
+        lon = null,
+        timezone_id = null,
+        localtime = null,
+        localtime_epoch = null,
+        utc_offset = null
     ),
-    current = RemoteCurrent(
+    current = CurrentModel(
+        observation_time = observationTime,
         temperature = temperature,
-        weatherDescriptions = listOf(weatherDescription),
-        weatherIcons = listOf(weatherIconUrl),
-        windSpeed = windSpeed,
+        weather_code = null,
+        weather_icons = listOf(weatherIconUrl),
+        weather_descriptions = listOf(weatherDescription),
+        wind_speed = windSpeed,
+        wind_degree = null,
+        wind_dir = null,
         pressure = pressure,
         precip = precip,
-        observationTime = observationTime
+        humidity = null,
+        cloudcover = null,
+        feelslike = null,
+        uv_index = null,
+        visibility = null,
+        is_day = null
     ),
-    request = null
 )
 
 fun DbHourlyForecast.toDomainHourlyModel(): HourlyModel = HourlyModel(
@@ -85,12 +102,12 @@ fun CurrentLocationModel.toCurrentEntity(): DbCurrentWeather {
         country = location?.country ?: "",
         region = location?.region ?: "",
         temperature = current?.temperature ?: 0,
-        weatherDescription = current?.weatherDescriptions?.firstOrNull() ?: "",
-        weatherIconUrl = current?.weatherIcons?.firstOrNull() ?: "",
-        windSpeed = current?.windSpeed ?: 0,
+        weatherDescription = current?.weather_descriptions?.firstOrNull() ?: "",
+        weatherIconUrl = current?.weather_icons?.firstOrNull() ?: "",
+        windSpeed = current?.wind_speed ?: 0,
         pressure = current?.pressure ?: 0,
         precip = current?.precip ?: 0.0,
-        observationTime = current?.observationTime ?: ""
+        observationTime = current?.observation_time ?: ""
     )
 }
 

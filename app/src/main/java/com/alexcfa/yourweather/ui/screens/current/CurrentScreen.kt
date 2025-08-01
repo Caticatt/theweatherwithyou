@@ -86,7 +86,7 @@ private fun CurrentLocationExtraction(
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "${currentLocation.location?.name}, ${currentLocation.location?.country}  ${currentLocation.current?.observationTime}",
+                text = "${currentLocation.location?.name}, ${currentLocation.location?.country}  ${currentLocation.current?.observation_time}",
                 style = MaterialTheme.typography.headlineLarge
             )
         }
@@ -110,14 +110,14 @@ private fun CurrentLocationExtraction(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 AsyncImage(
-                    model = currentLocation.current?.weatherIcons?.get(0),
+                    model = currentLocation.current?.weather_descriptions?.get(0),
                     contentDescription = stringResource(R.string.timeimage),
                     modifier = modifier
                         .height(200.dp)
                         .clip(MaterialTheme.shapes.small)
                 )
                 Text(
-                    text = currentLocation.current?.weatherDescriptions?.get(0).toString(),
+                    text = currentLocation.current?.weather_descriptions?.get(0).toString(),
                     style = MaterialTheme.typography.titleLarge,
                     modifier = modifier.align(Alignment.CenterHorizontally)
                 )
@@ -148,7 +148,7 @@ private fun CurrentLocationExtraction(
             horizontalAlignment = Alignment.Start
         ) {
             Text(
-                text = "Viento: ${currentLocation.current?.windSpeed} kmph",
+                text = "Viento: ${currentLocation.current?.wind_speed} kmph",
                 style = MaterialTheme.typography.titleLarge,
                 modifier = modifier
             )

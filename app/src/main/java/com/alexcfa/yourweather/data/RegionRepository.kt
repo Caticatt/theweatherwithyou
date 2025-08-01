@@ -1,8 +1,8 @@
 package com.alexcfa.yourweather.data
 
-import com.alexcfa.yourweather.data.datasource.GeocoderRegionDataSource
+import com.alexcfa.yourweather.data.datasource.RegionDataSource
 
-class RegionRepository(private val regionDataSource: GeocoderRegionDataSource) {
+class RegionRepository(private val regionDataSource: RegionDataSource) {
 
      suspend fun findLastRegionComplete(): String = regionDataSource.findLastRegionComplete()
 

@@ -12,11 +12,11 @@ import androidx.navigation.compose.rememberNavController
 import com.alexcfa.yourweather.App
 import com.alexcfa.yourweather.data.RegionRepository
 import com.alexcfa.yourweather.data.WeatherRepository
-import com.alexcfa.yourweather.data.WeatherRoomDataSource
-import com.alexcfa.yourweather.data.datasource.GeocoderRegionDataSource
-import com.alexcfa.yourweather.data.datasource.PlayServicesLocationDataSource
-import com.alexcfa.yourweather.data.datasource.WeatherServerDataSource
-import com.alexcfa.yourweather.data.remote.WeatherClient
+import com.alexcfa.yourweather.framework.GeocoderRegionDataSource
+import com.alexcfa.yourweather.framework.PlayServicesLocationDataSource
+import com.alexcfa.yourweather.framework.WeatherRoomDataSource
+import com.alexcfa.yourweather.framework.remote.WeatherClient
+import com.alexcfa.yourweather.framework.remote.WeatherServerDataSource
 import com.alexcfa.yourweather.ui.screens.current.CurrentScreen
 import com.alexcfa.yourweather.ui.screens.current.CurrentViewModel
 import com.alexcfa.yourweather.ui.screens.hourly.HourlyScreen

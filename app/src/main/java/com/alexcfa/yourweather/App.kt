@@ -2,7 +2,7 @@ package com.alexcfa.yourweather
 
 import android.app.Application
 import androidx.room.Room
-import com.alexcfa.yourweather.data.database.WeatherDatabase
+import com.alexcfa.yourweather.framework.database.WeatherDatabase
 
 class App : Application() {
 
