@@ -43,9 +43,50 @@ class WeatherServerDataSource (
 
 private fun CurrentLocationResponse.toCurrentDomainModel(): CurrentLocationModel =
     CurrentLocationModel(
-        request = request as RequestModel?,
-        location = location as LocationModel?,
-        current = current as CurrentModel?
+                request = request?.toDomainModel(),
+        location = location?.toDomainModel(),
+        current = current?.toDomainModel()
+    )
+
+private fun RemoteRequest.toDomainModel(): RequestModel =
+    RequestModel(
+        type = type,
+        query = query,
+        language = language,
+        unit = unit
+    )
+
+private fun RemoteLocation.toDomainModel(): LocationModel =
+    LocationModel(
+        name = name,
+        country = country,
+        region = region,
+        lat = lat,
+        lon = lon,
+        timezone_id = timezoneId,
+        localtime = localtime,
+        localtime_epoch = localtimeEpoch,
+        utc_offset = utcOffset
+    )
+
+private fun RemoteCurrent.toDomainModel(): CurrentModel =
+    CurrentModel(
+        observation_time = observationTime,
+        temperature = temperature,
+        weather_code = weatherCode,
+        weather_icons = weatherIcons,
+        weather_descriptions = weatherDescriptions,
+        wind_speed = windSpeed,
+        wind_degree = windDegree,
+        wind_dir = windDir,
+        pressure = pressure,
+        precip = precip,
+        humidity = humidity,
+        cloudcover = cloudcover,
+        feelslike = feelslike,
+        uv_index = uvIndex,
+        visibility = visibility,
+        is_day = isDay
     )
 
 private fun RemoteHourly.toHourlyDomainModel(): HourlyModel = HourlyModel(
